@@ -1,0 +1,35 @@
+
+.board-body{
+    max-width: 1226px;  /*限定最大宽度*/
+    margin: 0 auto;     /*居中*/
+    margin-bottom: 0px;
+    text-align: left;
+    position: relative;
+    background-color: #fff; /*背景白色*/
+}
+
+.board-head{
+    padding: 10px 20px 8px;
+    line-height: 24px;
+    position: relative;
+    border-bottom: 1px solid #eee;  /*底部分割线*/
+    margin-bottom: 0;
+    background-color: #fff;
+}
+
+
+.board-comment{
+	padding: 20px 20px 5px 20px;
+	position: relative;
+}
+
+.board-comment-textarea{
+	display: block;
+	width: 100%;
+	min-height: 30px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	margin-bottom: 5px;
+    padding: 5px 6px 3px;
+}

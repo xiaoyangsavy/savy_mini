@@ -1,0 +1,18 @@
+body,h1,h2,h3,h4,h5,h6,p,blockquote,dl,dt,dd,ul,ol,li,pre,
+form,fieldset,legend,button,input,textarea,th,td,section,p,span,font,div{margin:0;padding:0;font-family:"Microsoft yahei";color:#333;}
+body,button,input,select,textarea{font: 15px "Microsoft YaHei", Arial, Helvetica, sans-serif;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+address,cite,dfn,em,var{font-style:normal;}
+code,kbd,pre,samp{font-family:"Microsoft yahei";}
+small{font-size:12px;}
+ul,ol{list-style:none;}
+a{text-decoration:none;color: #333;}  /*取消下划线*/
+a:hover{text-decoration: none;}  /*鼠标经过时，取消下划线*/
+sup{vertical-align:text-top;}
+sub{vertical-align:text-bottom;}
+legend{color:#000;}
+fieldset,img{border:0;}
+button,input,select,textarea{font-size:100%;}
+table{border-collapse:collapse;border-spacing:0;}
+hr{margin:0;padding:0;height:1px;border:none;border-top:1px solid #f4f4f4;} /*分割线*/
+body{background: #f1f1f1;}

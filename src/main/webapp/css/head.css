@@ -1,0 +1,260 @@
+#header {
+	width: 100%;	/*宽度占满整个屏幕*/
+	height: 10vw;   /*高度为宽度的10%2*/
+	min-height: 150px;
+	margin: 0px;
+	padding: 0px;
+	background: none repeat scroll 0 0 #f6ab00; /*背景颜色*/
+	position: relative      /*相对布局*/
+}
+.header-title {
+	width: 100%;
+	height: 80%;
+	margin: 0 auto;		/*上下边距为0；左右边距自动*/
+	cursor: pointer; 	/*手型鼠标样式*/
+	text-align: center;	/*文字居中*/
+}
+.header-title h1 {
+	padding: 30px 0 20px 0;
+}
+.title-slogan {
+	position: relative;
+	font-family: "Microsoft Yahei", arial, sans-serif;
+	font-weight: 100;		/*字体粗细*/
+	letter-spacing: -2px;	/*字体间距*/
+	color: #fff;			/*字体颜色*/
+	font-size: 54px;		/*字体大小*/
+	margin: 0;
+	padding: 0;
+	text-shadow: 0 0 1px rgba(94,255,216,.8);
+	transition: all .1s ease-out;
+	-webkit-transition: all .1s ease-out;  /*鼠标经过时动画（无效）*/
+	-moz-transition: all .1s ease-out;
+	-o-transition: all .1s ease-out;
+	-ms-transition: all .1s ease-out
+}
+.title-name {
+	position: relative;
+	font-family: "Microsoft Yahei", arial, sans-serif;
+	color: #fff;
+	font-weight: 400;
+	font-size: 24px;
+	margin-left: 5px;
+	letter-spacing: 1px;
+	padding: 0;
+	text-shadow: 0 0 1px rgba(94,255,216,.8);
+	transition: all .5s ease-out;
+	-webkit-transition: all .5s ease-out;
+	-moz-transition: all .5s ease-out;
+	-o-transition: all .5s ease-out;
+	-ms-transition: all .5s ease-out
+}
+/*顶部选项栏*/
+.navigation-div {
+	height: 50px;
+	background-color: #f6ab00
+}
+.navigation-ul {
+	position: relative;
+	left: 0;
+	display: block;
+	margin-left: 0px;/*左边距*/
+	font-size: 16px
+}
+.navigation-ul>li {
+	position: relative;
+	float: left;
+	margin-right: 1px;
+	display: block;
+	width: 100px;
+	height: 100%;
+	line-height: 50px;	/*与height值相同时，文字垂直居中*/
+	text-align: center
+}
+.navigation-ul li a {
+	display: block;	/*使背景色占满整个元素*/
+	height: 100%;
+	color: #fff/*字体颜色*/
+}
+/*鼠标经过时的样式*/
+.navigation-ul li a:focus, .navigation-div .navigation-ul li a:hover {
+	background-color: #e60027;
+	color: #fff
+}
+.navigation-ul>li>ul>li>ul {
+	text-align: left;
+	position: absolute;
+	left: 100%;
+	min-width: 120px;
+	display: none;
+	font-size: 12px
+}
+/*首页默认选中
+#menu-item-0 {
+	background-color: #e60027;
+}*/
+
+/*下拉菜单*/
+.navigation-ul>li>ul>li {
+	float: none;
+	margin: 0;
+	position: relative;
+	background-color: #f6ab00
+}
+.navigation-ul>li>ul>li>a, .navigation-div .navigation-ul>li>ul>li>ul>li>a {
+	float: none;
+	display: block;
+	line-height: 50px;
+	color: #fff
+}
+.menu-sub {
+	min-width: 100px;
+	left: 0;
+	max-height: 0;
+	position: absolute;
+	top: 100%;
+	z-index: 0;
+	-webkit-perspective: 400px;
+	-moz-perspective: 400px;
+	-ms-perspective: 400px;
+	-o-perspective: 400px;
+	perspective: 400px
+}
+/*下拉菜单动画*/
+.menu-sub li {
+	opacity: 0;
+	-webkit-transform: rotateY(90deg);
+	-moz-transform: rotateY(90deg);
+	-ms-transform: rotateY(90deg);
+	-o-transform: rotateY(90deg);
+	ransform: rotateY(90deg);
+	-webkit-transition: opacity .4s, -webkit-transform .5s;
+	-moz-transition: opacity .4s, -moz-transform .5s;
+	-ms-transition: opacity .4s, -ms-transform .5s;
+	-o-transition: opacity .4s, -o-transform .5s;
+	transition: opacity .4s, transform .5s
+}
+.navigation-ul>li:focus .menu-sub, .navigation-ul>li:hover .menu-sub {
+	max-height: 1000px;
+	z-index: 10
+}
+.navigation-ul>li:focus .menu-sub li, .navigation-ul>li:hover .menu-sub li {
+	opacity: 1;
+	-webkit-transform: none;
+	-moz-transform: none;
+	-ms-transform: none;
+	-o-transform: none;
+	transform: none
+}
+.navigation-ul li:hover .menu-sub li:nth-child(1) {
+	-webkit-transition-delay: 0;
+	-moz-transition-delay: 0;
+	-ms-transition-delay: 0;
+	-o-transition-delay: 0;
+	transition-delay: 0
+}
+.navigation-ul li:hover .menu-sub li:nth-child(2) {
+	-webkit-transition-delay: 50ms;
+	-moz-transition-delay: 50ms;
+	-ms-transition-delay: 50ms;
+	-o-transition-delay: 50ms;
+	transition-delay: 50ms
+}
+.navigation-ul li:hover .menu-sub li:nth-child(3) {
+	-webkit-transition-delay: .1s;
+	-moz-transition-delay: .1s;
+	-ms-transition-delay: .1s;
+	-o-transition-delay: .1s;
+	transition-delay: .1s
+}
+.navigation-ul li:hover .menu-sub li:nth-child(4) {
+	-webkit-transition-delay: 150ms;
+	-moz-transition-delay: 150ms;
+	-ms-transition-delay: 150ms;
+	-o-transition-delay: 150ms;
+	transition-delay: 150ms
+}
+.navigation-ul li:hover .menu-sub li:nth-child(5) {
+	-webkit-transition-delay: .2s;
+	-moz-transition-delay: .2s;
+	-ms-transition-delay: .2s;
+	-o-transition-delay: .2s;
+	transition-delay: .2s
+}
+.navigation-ul li:hover .menu-sub li:nth-child(6) {
+	-webkit-transition-delay: 250ms;
+	-moz-transition-delay: 250ms;
+	-ms-transition-delay: 250ms;
+	-o-transition-delay: 250ms;
+	transition-delay: 250ms
+}
+.navigation-ul li:hover .menu-sub li:nth-child(7) {
+	-webkit-transition-delay: .3s;
+	-moz-transition-delay: .3s;
+	-ms-transition-delay: .3s;
+	-o-transition-delay: .3s;
+	transition-delay: .3s
+}
+.navigation-ul li:hover .menu-sub li:nth-child(8) {
+	-webkit-transition-delay: 350ms;
+	-moz-transition-delay: 350ms;
+	-ms-transition-delay: 350ms;
+	-o-transition-delay: 350ms;
+	transition-delay: 350ms
+}
+.menu-sub li:nth-child(1) {
+	-webkit-transition-delay: 350ms;
+	-moz-transition-delay: 350ms;
+	-ms-transition-delay: 350ms;
+	-o-transition-delay: 350ms;
+	transition-delay: 350ms
+}
+.menu-sub li:nth-child(2) {
+	-webkit-transition-delay: .3s;
+	-moz-transition-delay: .3s;
+	-ms-transition-delay: .3s;
+	-o-transition-delay: .3s;
+	transition-delay: .3s
+}
+.menu-sub li:nth-child(3) {
+	-webkit-transition-delay: 250ms;
+	-moz-transition-delay: 250ms;
+	-ms-transition-delay: 250ms;
+	-o-transition-delay: 250ms;
+	transition-delay: 250ms
+}
+.menu-sub li:nth-child(4) {
+	-webkit-transition-delay: .2s;
+	-moz-transition-delay: .2s;
+	-ms-transition-delay: .2s;
+	-o-transition-delay: .2s;
+	transition-delay: .2s
+}
+.menu-sub li:nth-child(5) {
+	-webkit-transition-delay: 150ms;
+	-moz-transition-delay: 150ms;
+	-ms-transition-delay: 150ms;
+	-o-transition-delay: 150ms;
+	transition-delay: 150ms
+}
+.menu-sub li:nth-child(6) {
+	-webkit-transition-delay: .1s;
+	-moz-transition-delay: .1s;
+	-ms-transition-delay: .1s;
+	-o-transition-delay: .1s;
+	transition-delay: .1s
+}
+.menu-sub li:nth-child(7) {
+	-webkit-transition-delay: 50ms;
+	-moz-transition-delay: 50ms;
+	-ms-transition-delay: 50ms;
+	-o-transition-delay: 50ms;
+	transition-delay: 50ms
+}
+.menu-sub li:nth-child(8) {
+	-webkit-transition-delay: 0;
+	-moz-transition-delay: 0;
+	-ms-transition-delay: 0;
+	-o-transition-delay: 0;
+	transition-delay: 0
+}
