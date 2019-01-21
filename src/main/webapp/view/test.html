@@ -1,5 +1,119 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <title>Paginationjs example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../css/pagination.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+
+
+        #wrapper {
+            width: 900px;
+            margin: 20px auto;
+        }
+
+    </style>
+
+    <script>
+    $('#pagination-demo1').pagination({
+        dataSource: [1, 2, 3, 4, 5, 6, 7, 40],
+        pageSize: 5,
+        showGoInput: true,
+        showGoButton: true,
+        callback: function(data, pagination) {
+            // template method of yourself
+            var html = template(data);
+            dataContainer.html(html);
+        }
+    })
+    </script>
+</head>
 <body>
-<h2>This is test!</h2>
+
+<div id="wrapper">
+    <section>
+        <div id="pagination-demo1"></div>
+    </section>
+</div>
+
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="../js/pagination.js"></script>
+
+
+//分页组件
+<script>
+$(function() {
+  (function(name) {
+    var container = $('#pagination-' + name);
+    var sources = function () {
+      var result = [];
+
+      for (var i = 1; i < 196; i++) {
+        result.push(i);
+      }
+
+      return result;
+    }();
+
+    var options = {
+      dataSource: sources,
+      callback: function (response, pagination) {
+        window.console && console.log(response, pagination);
+
+        var dataHtml = '<ul>';
+
+        $.each(response, function (index, item) {
+          dataHtml += '<li>' + item + '</li>';
+        });
+
+        dataHtml += '</ul>';
+
+        container.prev().html(dataHtml);
+      }
+    };
+
+    //$.pagination(container, options);
+
+    container.addHook('beforeInit', function () {
+      window.console && console.log('beforeInit...');
+    });
+    container.pagination(options);
+
+    container.addHook('beforePageOnClick', function () {
+      window.console && console.log('beforePageOnClick...');
+      //return false
+    });
+  })('demo1');
+
+  (function(name) {
+    var container = $('#pagination-' + name);
+    container.pagination({
+      dataSource: 'https://api.flickr.com/services/feeds/photos_public.gne?tags=cat&tagmode=any&format=json&jsoncallback=?',
+      locator: 'items',
+      totalNumber: 120,
+       showGoInput: true,
+      showGoButton: true,
+      pageSize: 20,
+      ajax: {
+        beforeSend: function() {
+          container.prev().html('Loading data from flickr.com ...');
+        }
+      },
+      callback: function(response, pagination) {
+        window.console && console.log(22, response, pagination);
+        var dataHtml = '<ul>';
+
+        $.each(response, function (index, item) {
+          dataHtml += '<li>' + item.title + '</li>';
+        });
+
+        dataHtml += '</ul>';
+
+        container.prev().html(dataHtml);
+      }
+    })
+  })('demo2');
+})
+</script>
 </body>
 </html>

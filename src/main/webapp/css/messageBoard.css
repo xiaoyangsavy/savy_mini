@@ -33,3 +33,160 @@
 	margin-bottom: 5px;
     padding: 5px 6px 3px;
 }
+
+.board-comment-submit-div{
+    position: relative;
+    overflow: hidden;
+}
+
+.board-comment-submit-button{
+    font-size: 15px;
+    height: 36px !important;
+    float: right;
+    color: #fff;
+    background-color: #5fbaac;
+    display: inline-block;
+    padding: 6px 12px 4px;
+    margin-bottom: 0;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 0;
+    border-radius: 0;
+    font-family: "Microsoft Yahei","Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0;
+    margin-bottom: 0px;
+    font-size: 100%;
+    vertical-align: middle;
+}
+
+.board-comment-userinfo-div{
+    display: block;
+    padding: 20px 0 0 210px;
+    color: #444;
+}
+
+.board-comment-userinfo-div h4{
+    float: left;
+    width: 220px;
+    line-height: 100px;
+    margin-left: -230px;
+    text-align: right;
+    display: inline;
+}
+
+.board-comment-userinfo-div ul{
+    border-left: dotted 1px #ccc;
+    padding-left: 30px;
+    padding: 0;
+    padding-left: 0px;
+    margin: 0;
+    list-style: none;
+}
+
+.board-comment-userinfo-div li{
+    margin-bottom: 10px;
+    line-height: 20px;
+    list-style: none;
+}
+
+.board-comment-userinfo-div input{
+    width: 206px;
+    margin-left: 20px;
+    margin-right: 10px;
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-top-color: rgb(217, 217, 217);
+    border-left-color: rgb(217, 217, 217);
+    border-top-color: silver;
+    border-left-color: #d0d0d0;
+    -webkit-transition: border linear .2s;
+    -moz-transition: border linear .2s;
+    transition: border linear .2s;
+    display: inline-block;
+    height: 20px;
+    padding: 5px 6px 3px;
+    margin-bottom: 10px;
+    line-height: 20px;
+    color: #555;
+    border-radius: 0;
+    vertical-align: middle;
+    font-size: 100%;
+}
+
+.board-commentlist-div{
+    position: relative;
+    background-color: #fff;
+}
+
+.board-commentlist-div{
+    font-size: 15px;
+    padding: 12px 20px;
+    line-height: 14px;
+    color: #5fbaac;
+    font-weight: 400;
+    border-bottom: 1px solid #dbece8;
+}
+
+.board-commentlist-div b{
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.board-commentlist-ol{
+    padding: 12px 20px 0 20px;
+    margin: 0;
+    list-style: none;
+}
+
+.board-commentlist-ol li{
+    padding: 12px 0 10px 0;
+}
+
+.board-commentlist-ol img{
+    position: absolute;
+    width: 54px;
+    height: 54px;
+    border-radius: 2px;
+    webkit-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-out;
+    max-width: 100%;
+    width: auto\9;
+    height: auto;
+    vertical-align: middle;
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+}
+
+.commentlist-content{
+    padding: 10px 15px;
+    line-height: 25px;
+    margin-top: -2px;
+    margin-left: 72px;
+    border-radius: 3px;
+    position: relative;
+    background: #fbfdfb;
+    border: 1px #eee solid;
+    font-size: 15px;
+}
+
+.commentlist-title{
+    color: #bbb;
+    font-size: 14px;
+    line-height: 25px;
+}
+
+.commentlist-title-name{
+    margin-right: 10px;
+}
+
+#wrapper{
+    overflow: hidden;
+    text-align: center;
+    padding: 20px;
+}

@@ -7,9 +7,33 @@
  <link rel="stylesheet"  href="../css/common.css" type="text/css" media="all" />
  <link rel="stylesheet"  href="../css/head.css" type="text/css" media="all" />
   <link rel="stylesheet"  href="../css/messageBoard.css" type="text/css" media="all" />
- <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/pagination.js"></script>
+    <link href="../css/pagination.css" rel="stylesheet" type="text/css">
+    <script>
+ $('#pagination-demo1').pagination({
+     dataSource: [1, 2, 3, 4, 5, 6, 7,40],
+     pageSize: 5,
+     showGoInput: true,
+     showGoButton: true,
+     callback: function(data, pagination) {
+         // template method of yourself
+         var html = template(data);
+         dataContainer.html(html);
+     }
+ })
+    </script>
+
+        <style type="text/css">
 
 
+            #wrapper {
+                width: 900px;
+                margin: 20px auto;
+            }
+
+        </style>
 </head>
 
 <body>
@@ -37,22 +61,18 @@
 		<div class="board-comment">
 			<div class="comt-box">
 				<textarea class="board-comment-textarea" placeholder="写点什么..."  name="comment" id="comment" cols="100%" rows="3" tabindex="1" onkeydown="if(event.ctrlKey&amp;&amp;event.keyCode==13){document.getElementById('submit').click();return false};"></textarea>
-				<div class="comt-ctrl">
-					<button class="btn btn-primary pull-right" type="submit" name="submit" id="submit" tabindex="5"><i class="fa fa-check-square-o"></i> 提交评论</button>
-					<div class="comt-tips pull-right"><input type='hidden' name='comment_post_ID' value='42' id='comment_post_ID' />
-<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
-</div>
+				<div class="board-comment-submit-div">
+					<button class="board-comment-submit-button" type="submit" name="submit" id="submit" tabindex="5"><i class="fa fa-check-square-o"></i> 提交评论</button>
 					<span data-type="comment-insert-smilie" class="muted comt-smilie">表情</span>
-
 				</div>
 			</div>
 
-												<div class="comt-comterinfo" id="comment-author-info" >
+						 <div class="board-comment-userinfo-div" id="comment-author-info" style="display: none">
 						<h4>Hi，您需要填写昵称和邮箱！</h4>
 						<ul>
-							<li class="form-inline"><label class="hide" for="author">昵称</label><input class="ipt" type="text" name="author" id="author" value="" tabindex="2" placeholder="昵称"><span class="help-inline">昵称 (必填)</span></li>
-							<li class="form-inline"><label class="hide" for="email">邮箱</label><input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="help-inline">邮箱 (必填)</span></li>
-							<li class="form-inline"><label class="hide" for="url">网址</label><input class="ipt" type="text" name="url" id="url" value="" tabindex="4" placeholder="网址"><span class="help-inline">网址</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="author" id="author" value="" tabindex="2" placeholder="昵称"><span class="help-inline">昵称 (必填)</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="help-inline">邮箱 (必填)</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="url" id="url" value="" tabindex="4" placeholder="网址"><span class="help-inline">网址</span></li>
 						</ul>
 					</div>
 									</div>
@@ -62,32 +82,109 @@
 	</div>
 
 	<!--  评论-->
-<div id="postcomments">
-	<div id="comments">
-		<i class="fa fa-comments-o"></i> <b> (0)</b>个小伙伴在吐槽
+<div id="board-commentlist-div" class="board-commentlist-div">
+	<div id="board-commentlist-title-div" class="board-commentlist-div">
+		  <b> (0)</b>个小伙伴在吐槽
 	</div>
-<ol class="commentlist">
-		<li class="comment even thread-even depth-1" id="comment-83162"><div class="c-avatar"><img alt='' data-original='https://cuiqingcai.com/avatar/.png' class='avatar avatar-54 photo avatar-default' height='54' width='54' /><div class="c-main" id="div-comment-83162">内容1<div class="c-meta"><span class="c-author">昵称1</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
-
-<li class="comment odd alt thread-odd thread-alt depth-1" id="comment-83163"><div class="c-avatar"><img alt='' data-original='https://cuiqingcai.com/avatar/.png' class='avatar avatar-54 photo avatar-default' height='54' width='54' /><div class="c-main" id="div-comment-83163">内容2<div class="c-meta"><span class="c-author"><a href='http://t.qq.com/CQCcqc123456' rel='external nofollow' class='url'>昵称2</a></span>2015-02-10 20:26  </div></div></div></li><!-- #comment-## -->
-
-<li class="comment even thread-even depth-1" id="comment-83164"><div class="c-avatar"><img alt='' data-original='https://cuiqingcai.com/avatar/.png' class='avatar avatar-54 photo avatar-default' height='54' width='54' /><div class="c-main" id="div-comment-83164">内容3 <img data-original="http://img.t.sinajs.cn/t35/style/images/common/face/ext/normal/0b/tootha_org.gif" /> <div class="c-meta"><span class="c-author">昵称3</span>2015-02-10 14:01  </div></div></div></li><!-- #comment-## -->
+<ol class="board-commentlist-ol">
+		<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容1<div class="commentlist-title"><span class="commentlist-title-name">昵称1</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
+<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容2<div class="commentlist-title"><span class="commentlist-title-name">昵称2</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
+<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容3<div class="commentlist-title"><span class="commentlist-title-name">昵称3</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
 
 	</ol>
 
 <!-- 页面跳转 -->
-	<div class="commentnav"	>
-		<a class="prev page-numbers" href="https://cuiqingcai.com/message/comment-page-21#comments">«</a>
-<a class='page-numbers' href='https://cuiqingcai.com/message/comment-page-1#comments'>1</a>
-<span class="page-numbers dots">&hellip;</span>
-<a class='page-numbers' href='https://cuiqingcai.com/message/comment-page-20#comments'>20</a>
-<a class='page-numbers' href='https://cuiqingcai.com/message/comment-page-21#comments'>21</a>
-<span aria-current='page' class='page-numbers current'>22</span>	</div>
+	  <div id="wrapper">
+          <section>
+              <div id="pagination-demo1"></div>
+          </section>
+      </div>
+</div>
+
+
+
 </div>
 
 
 
 
 </div></div>
+
+
+
+<script>
+$(function() {
+  (function(name) {
+    var container = $('#pagination-' + name);
+    var sources = function () {
+      var result = [];
+
+      for (var i = 1; i < 196; i++) {
+        result.push(i);
+      }
+
+      return result;
+    }();
+
+    var options = {
+      dataSource: sources,
+      callback: function (response, pagination) {
+        window.console && console.log(response, pagination);
+
+        var dataHtml = '<ul>';
+
+        $.each(response, function (index, item) {
+          dataHtml += '<li>' + item + '</li>';
+        });
+
+        dataHtml += '</ul>';
+
+        container.prev().html(dataHtml);
+      }
+    };
+
+    //$.pagination(container, options);
+
+    container.addHook('beforeInit', function () {
+      window.console && console.log('beforeInit...');
+    });
+    container.pagination(options);
+
+    container.addHook('beforePageOnClick', function () {
+      window.console && console.log('beforePageOnClick...');
+      //return false
+    });
+  })('demo1');
+
+  (function(name) {
+    var container = $('#pagination-' + name);
+    container.pagination({
+      dataSource:[1, 2, 3, 4, 5, 6, 7,40],      //网址'https://api.flickr.com/services/feeds/photos_public.gne?tags=cat&tagmode=any&format=json&jsoncallback=?',
+      locator: 'items',
+      totalNumber: 120,
+       showGoInput: true,
+      showGoButton: true,
+      pageSize: 3,
+      ajax: {
+        beforeSend: function() {
+          container.prev().html('Loading data from flickr.com ...');
+        }
+      },
+      callback: function(response, pagination) {
+        window.console && console.log(22, response, pagination);
+        var dataHtml = '<ul>';
+
+        $.each(response, function (index, item) {
+          dataHtml += '<li>' + item.title + '</li>';
+        });
+
+        dataHtml += '</ul>';
+
+        container.prev().html(dataHtml);
+      }
+    })
+  })('demo1');
+})
+</script>
 </body>
 </html>
