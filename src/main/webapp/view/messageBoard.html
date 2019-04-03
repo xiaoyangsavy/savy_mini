@@ -11,28 +11,27 @@
 <script src="../js/jquery-3.3.1.min.js"></script>
 <script src="../js/pagination.js"></script>
     <link href="../css/pagination.css" rel="stylesheet" type="text/css">
+	<link href="../css/emoji.css" rel="stylesheet" type="text/css">
+	<script src="../js/emoji.js"></script>
     <script>
- $('#pagination-demo1').pagination({
-     dataSource: [1, 2, 3, 4, 5, 6, 7,40],
-     pageSize: 5,
-     showGoInput: true,
-     showGoButton: true,
-     callback: function(data, pagination) {
-         // template method of yourself
-         var html = template(data);
-         dataContainer.html(html);
-     }
- })
+
+//输入框获取焦点时触发，显示提示信息
+function getAddFocus(id){
+    $("#comment-author-info").css("display", "");
+}
+//输入框失去焦点时触发，隐藏提示信息
+function lostAddFocus(id) {
+    // $("#comment-author-info").css("display", "none");//点击提示信息时也会隐藏，取消此功能
+}
+
+
     </script>
 
         <style type="text/css">
-
-
             #wrapper {
                 width: 900px;
                 margin: 20px auto;
             }
-
         </style>
 </head>
 
@@ -60,18 +59,19 @@
 
 		<div class="board-comment">
 			<div class="comt-box">
-				<textarea class="board-comment-textarea" placeholder="写点什么..."  name="comment" id="comment" cols="100%" rows="3" tabindex="1" onkeydown="if(event.ctrlKey&amp;&amp;event.keyCode==13){document.getElementById('submit').click();return false};"></textarea>
+				<textarea  class="board-comment-textarea" placeholder="写点什么..."  name="board-comment-textarea" id="board-comment-textarea" cols="100%" rows="3" tabindex="1"
+						   onfocus="getAddFocus('board-comment-textarea')" onblur="lostAddFocus('board-comment-textarea');"></textarea>
 				<div class="board-comment-submit-div">
-					<button class="board-comment-submit-button" type="submit" name="submit" id="submit" tabindex="5"><i class="fa fa-check-square-o"></i> 提交评论</button>
-					<span data-type="comment-insert-smilie" class="muted comt-smilie">表情</span>
+					<button class="board-comment-submit-button" type="submit" name="board-comment-submit-button" id="board-comment-submit-button" tabindex="5"><i class="fa fa-check-square-o"></i> 提交评论</button>
+					<div class="emoji-div"> <a class="emoji-button" href="javascript:void(0);"></a></div>
 				</div>
 			</div>
-
-						 <div class="board-comment-userinfo-div" id="comment-author-info" style="display: none">
-						<h4>Hi，您需要填写昵称和邮箱！</h4>
+					<div id="emoji-list-div" class="emoji-list-div" style="display: none"> </div><!--表情包-->
+					<div class="board-comment-userinfo-div" id="comment-author-info" style="display: none"><!--评论的个人信息填写-->
+						<h4>请填写个人信息：</h4>
 						<ul>
-							<li class="form-inline"> <input class="ipt" type="text" name="author" id="author" value="" tabindex="2" placeholder="昵称"><span class="help-inline">昵称 (必填)</span></li>
-							<li class="form-inline"> <input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="help-inline">邮箱 (必填)</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="author" id="name" value="" tabindex="2" placeholder="昵称"><span class="help-inline">昵称</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="help-inline">邮箱 </span></li>
 							<li class="form-inline"> <input class="ipt" type="text" name="url" id="url" value="" tabindex="4" placeholder="网址"><span class="help-inline">网址</span></li>
 						</ul>
 					</div>
@@ -86,7 +86,7 @@
 	<div id="board-commentlist-title-div" class="board-commentlist-div">
 		  <b> (0)</b>个小伙伴在吐槽
 	</div>
-<ol class="board-commentlist-ol">
+<ol class="board-commentlist-ol" id="board-commentlist-ol">
 		<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容1<div class="commentlist-title"><span class="commentlist-title-name">昵称1</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
 <li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容2<div class="commentlist-title"><span class="commentlist-title-name">昵称2</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
 <li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容3<div class="commentlist-title"><span class="commentlist-title-name">昵称3</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
@@ -114,47 +114,7 @@
 
 <script>
 $(function() {
-  (function(name) {
-    var container = $('#pagination-' + name);
-    var sources = function () {
-      var result = [];
 
-      for (var i = 1; i < 196; i++) {
-        result.push(i);
-      }
-
-      return result;
-    }();
-
-    var options = {
-      dataSource: sources,
-      callback: function (response, pagination) {
-        window.console && console.log(response, pagination);
-
-        var dataHtml = '<ul>';
-
-        $.each(response, function (index, item) {
-          dataHtml += '<li>' + item + '</li>';
-        });
-
-        dataHtml += '</ul>';
-
-        container.prev().html(dataHtml);
-      }
-    };
-
-    //$.pagination(container, options);
-
-    container.addHook('beforeInit', function () {
-      window.console && console.log('beforeInit...');
-    });
-    container.pagination(options);
-
-    container.addHook('beforePageOnClick', function () {
-      window.console && console.log('beforePageOnClick...');
-      //return false
-    });
-  })('demo1');
 
   (function(name) {
     var container = $('#pagination-' + name);
@@ -172,15 +132,15 @@ $(function() {
       },
       callback: function(response, pagination) {
         window.console && console.log(22, response, pagination);
-        var dataHtml = '<ul>';
+        var dataHtml = '';
 
         $.each(response, function (index, item) {
-          dataHtml += '<li>' + item.title + '</li>';
+          dataHtml += '<li ><div ><img alt=\'\' src="../images/user.png"  height=\'54\' width=\'54\' /><div class="commentlist-content">内容1<div class="commentlist-title"><span class="commentlist-title-name">昵称1</span>2015-02-15 21:01  </div></div></div></li>';
         });
 
-        dataHtml += '</ul>';
 
-        container.prev().html(dataHtml);
+        var showDataHtml = $('#board-commentlist-ol');
+          showDataHtml.html(dataHtml);
       }
     })
   })('demo1');

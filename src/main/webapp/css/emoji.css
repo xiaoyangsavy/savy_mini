@@ -1,0 +1,68 @@
+/**表情包**/
+
+.emoji-div {
+	width: 100%;
+	height: 35px;
+	background-color: #fff;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+}
+.emoji-button {
+	float: left;
+	margin-top: 8px;
+	margin-left: 10px;
+	background-image: url(../images/imgs.png);
+	background-repeat: no-repeat;
+	background-position: 0 -13px;
+	height: 18px;
+	width: 20px;
+	cursor: pointer
+}
+.emoji-button:active {
+	margin-top: 9px;
+}
+.emoji-button:hover {
+	background-position: 0 -31px
+}
+.postBtn {
+	float: right;
+	font: 13px "微软雅黑", Arial, Helvetica, sans-serif;
+	color: #808080;
+	padding: 9px 20px 7px 20px;
+	border-left: 1px solid #ccc;
+	cursor: pointer;
+	-moz-border-radius: 0 0 5px 0;
+	-webkit-border-radius: 0 0 5px 0;
+	border-radius: 0 0 5px 0;
+}
+.postBtn:hover {
+	color: #333;
+	background-color: #efefef;
+}
+.postBtn:active {
+	padding: 10px 20px 6px 20px;
+}
+.emoji-list-div {
+	width: 500px;
+	height: 120px;
+	display: block;
+	color: #444;
+}
+.emoji-list-div>img {
+	border: 1px solid #ccc;
+	float: left;
+	margin-left: -1px;
+	margin-top: -1px;
+	position: relative;
+	width: 24px;
+	height: 24px;
+	padding: 3px 3px 3px 3px;
+	cursor: pointer;
+}
+.emoji-list-div>img:hover {
+	background-color: #efefef;
+}
+.emoji-list-div>img:active {
+	padding: 4px 3px 2px 3px;
+}
