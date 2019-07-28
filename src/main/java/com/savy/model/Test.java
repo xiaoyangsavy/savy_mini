@@ -2,7 +2,16 @@ package com.savy.model;
 
 public class Test {
 
+    private int id;
     private String value;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getValue() {
         return value;

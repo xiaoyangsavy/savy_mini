@@ -1,0 +1,85 @@
+<!DOCTYPE html> <!-- html5格式头，不加入的话富文本编辑器显示会错乱 -->
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>KindEditor JSP</title>
+	<link rel="stylesheet" href="../../js/simditor/css/simditor.css" />
+
+
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="../../js/simditor/js/module.js"></script>
+    <script type="text/javascript" src="../../js/simditor/js/uploader.js"></script>
+    <script type="text/javascript" src="../../js/simditor/js/hotkeys.js"></script>
+    <script type="text/javascript" src="../../js/simditor/js/dompurify.js"></script>
+    <script type="text/javascript" src="../../js/simditor/js/simditor.js"></script>
+
+
+
+<script>
+
+  $(function(){
+        //初始化富文本编辑器
+          Simditor.locale = 'zh-CN';//设置中文
+          var editor = new Simditor({
+              textarea: $("#editor"),  //textarea的id
+              placeholder: '',
+              toolbar:  ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'], //工具条都包含哪些内容
+              pasteImage: true,//允许粘贴图片
+              upload : {
+                  url : 'localhost:8080/file/upload', //文件上传的接口地址
+                  params: null, //键值对,指定文件上传接口的额外参数,上传的时候随文件一起提交
+                  fileKey:'file', //服务器端获取文件数据的参数名
+                  connectionCount: 3,
+                  leaveConfirm: '正在上传文件'
+              }
+          });
+        });
+
+  editor.uploader.on('uploadsuccess', (res,file,mask)=>{
+                         //获得上传的文件对象
+                         console.log('1111')
+                         let img = file.img;
+                         console.log(res);
+                         console.log(file);//simditor的文件对象
+                         console.log(mask);//mask为后台接口地址返回来的参数
+
+                         if(mask.code===200){
+                             alert("上传成功");
+                           //  img.attr('src',"http://服务器图片路径.jpg");//重新给img标签的src属性赋值图片路径
+                         }else {
+                             alert("图片上传失败,请重新上传");
+                         }
+
+                     });
+
+
+  //获取富文本编辑器中的内容
+  function contextTextOnblur() {
+  	$(document).on("blur", "#contextText", function() {
+  		var content = $(".simditor-body").html();
+  		$("#content").val(content);
+  	});
+  }
+
+ </script>
+</head>
+<body>
+
+	 <div class="form-group">
+            <label class="col-md-3 control-label">详情
+              <span class="required"> * </span>
+            </label>
+          <div class="col-md-7" id="contextText">
+    	<div class="form-group" align="left" id="nochecke">
+    	     <textarea id="editor" type="text/plain"  hidden="true" autofocus>
+    	     </textarea>
+    	</div>
+         </div>
+        <div style="display: none">
+    	<input type="input" id="content" name="content" value=''>
+        </div>
+     </div>
+
+
+</body>
+</html>
