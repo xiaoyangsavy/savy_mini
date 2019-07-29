@@ -28,11 +28,12 @@ public class UploadController{
     //上传
     @RequestMapping(value = "/upload",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Map<String,Object> up(@RequestParam("file") MultipartFile file){
+    public Map<String,Object> up(MultipartFile fileData){
         System.out.println("调用上传文件接口！");
+        System.out.println(fileData!=null?"not null":"null");
         Map<String,Object> resultMap =new HashMap<String,Object>();//根据前端富文本编辑器的要求，返回固定字段
         boolean isSuccessFlag = true;   //文件是否保存成功
-        if(file.isEmpty()){ //文件为空时返回失败
+        if(fileData.isEmpty()){ //文件为空时返回失败
             isSuccessFlag = false;
         }
         // List<MultipartFile> files=(Mul)(request)
@@ -47,7 +48,8 @@ public class UploadController{
             System.out.println("创建文件目录:"+myFileDirectory);
             myFileDirectory.mkdirs();
         }
-            String fileOriginalName = file.getOriginalFilename();   //初始文件名
+            String fileOriginalName = fileData.getOriginalFilename();   //初始文件名
+//             String fileOriginalName = "1.png";   //初始文件名
             String fileSuffix = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));//文件后缀名称
             String  finalFileName = CommonUtil.generateRandomFilename()+fileSuffix;//生成随机文件名
             //String filePath = "E:/test_load/";
@@ -55,14 +57,18 @@ public class UploadController{
             System.out.print("最终保存的文件名为："+finalFilePath);
             File  finalFile = new File( finalFilePath);
         try {
-            file.transferTo(finalFile);// 将传入的文件保存到指定位置
+            fileData.transferTo(finalFile);// 将传入的文件保存到指定位置
         } catch (IOException e) {
             isSuccessFlag = false;
             e.printStackTrace();
         }
+
+        finalFilePath =  finalFilePath.substring(1);//windows环境中去除地址前面的
+        System.out.print("返回给前端的地址为："+finalFilePath);
+        
         if(isSuccessFlag) {
             resultMap.put("success", true);  //保存成功
-            resultMap.put("file_path", finalFilePath);
+            resultMap.put("file_path",finalFilePath);
         }else{
             resultMap.put("success", false);  //保存失败
         }

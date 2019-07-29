@@ -1,26 +1,29 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module unless amdModuleId is set
-    define('simple-uploader', ["jquery","simple-module"], function ($, SimpleModule) {
-      return (root['uploader'] = factory($, SimpleModule));
+    // AMD. Register as an anonymous module.
+    define('simple-uploader', ["jquery",
+      "simple-module"], function ($, SimpleModule) {
+      return (root.returnExportsGlobal = factory($, SimpleModule));
     });
   } else if (typeof exports === 'object') {
     // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
+    // only CommonJS-like enviroments that support module.exports,
     // like Node.
-    module.exports = factory(require("jquery"),require("simple-module"));
+    module.exports = factory(require("jquery"),
+      require("simple-module"));
   } else {
     root.simple = root.simple || {};
-    root.simple['uploader'] = factory(jQuery,SimpleModule);
+    root.simple['uploader'] = factory(jQuery,
+      SimpleModule);
   }
 }(this, function ($, SimpleModule) {
 
 var Uploader, uploader,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Uploader = (function(superClass) {
-  extend(Uploader, superClass);
+Uploader = (function(_super) {
+  __extends(Uploader, _super);
 
   function Uploader() {
     return Uploader.__super__.constructor.apply(this, arguments);
@@ -44,7 +47,7 @@ Uploader = (function(superClass) {
         _this.files.splice($.inArray(file, _this.files), 1);
         if (_this.queue.length > 0 && _this.files.length < _this.opts.connectionCount) {
           return _this.upload(_this.queue.shift());
-        } else if (_this.files.length === 0) {
+        } else {
           return _this.uploading = false;
         }
       };
@@ -69,16 +72,16 @@ Uploader = (function(superClass) {
   })();
 
   Uploader.prototype.upload = function(file, opts) {
-    var f, i, key, len;
+    var f, key, _i, _len;
     if (opts == null) {
       opts = {};
     }
     if (file == null) {
       return;
     }
-    if ($.isArray(file) || file instanceof FileList) {
-      for (i = 0, len = file.length; i < len; i++) {
-        f = file[i];
+    if ($.isArray(file)) {
+      for (_i = 0, _len = file.length; _i < _len; _i++) {
+        f = file[_i];
         this.upload(f, opts);
       }
     } else if ($(file).is('input:file')) {
@@ -107,9 +110,9 @@ Uploader = (function(superClass) {
   };
 
   Uploader.prototype.getFile = function(fileObj) {
-    var name, ref, ref1;
+    var name, _ref, _ref1;
     if (fileObj instanceof window.File || fileObj instanceof window.Blob) {
-      name = (ref = fileObj.fileName) != null ? ref : fileObj.name;
+      name = (_ref = fileObj.fileName) != null ? _ref : fileObj.name;
     } else {
       return null;
     }
@@ -119,27 +122,28 @@ Uploader = (function(superClass) {
       params: this.opts.params,
       fileKey: this.opts.fileKey,
       name: name,
-      size: (ref1 = fileObj.fileSize) != null ? ref1 : fileObj.size,
+      size: (_ref1 = fileObj.fileSize) != null ? _ref1 : fileObj.size,
       ext: name ? name.split('.').pop().toLowerCase() : '',
       obj: fileObj
     };
   };
 
   Uploader.prototype._xhrUpload = function(file) {
-    var formData, k, ref, v;
+    var formData, k, v, _ref;
     formData = new FormData();
     formData.append(file.fileKey, file.obj);
     formData.append("original_filename", file.name);
     if (file.params) {
-      ref = file.params;
-      for (k in ref) {
-        v = ref[k];
+      _ref = file.params;
+      for (k in _ref) {
+        v = _ref[k];
         formData.append(k, v);
       }
     }
     return file.xhr = $.ajax({
       url: file.url,
       data: formData,
+      dataType: 'json',
       processData: false,
       contentType: false,
       type: 'POST',
@@ -174,8 +178,7 @@ Uploader = (function(superClass) {
       success: (function(_this) {
         return function(result) {
           _this.trigger('uploadprogress', [file, file.size, file.size]);
-          _this.trigger('uploadsuccess', [file, result]);
-          return $(document).trigger('uploadsuccess', [file, result, _this]);
+          return _this.trigger('uploadsuccess', [file, result]);
         };
       })(this),
       complete: (function(_this) {
@@ -187,11 +190,11 @@ Uploader = (function(superClass) {
   };
 
   Uploader.prototype.cancel = function(file) {
-    var f, i, len, ref;
+    var f, _i, _len, _ref;
     if (!file.id) {
-      ref = this.files;
-      for (i = 0, len = ref.length; i < len; i++) {
-        f = ref[i];
+      _ref = this.files;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        f = _ref[_i];
         if (f.id === file * 1) {
           file = f;
           break;
@@ -229,11 +232,11 @@ Uploader = (function(superClass) {
   };
 
   Uploader.prototype.destroy = function() {
-    var file, i, len, ref;
+    var file, _i, _len, _ref;
     this.queue.length = 0;
-    ref = this.files;
-    for (i = 0, len = ref.length; i < len; i++) {
-      file = ref[i];
+    _ref = this.files;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      file = _ref[_i];
       this.cancel(file);
     }
     $(window).off('.uploader-' + this.id);
@@ -256,6 +259,10 @@ uploader = function(opts) {
   return new Uploader(opts);
 };
 
+
 return uploader;
 
+
 }));
+
+
