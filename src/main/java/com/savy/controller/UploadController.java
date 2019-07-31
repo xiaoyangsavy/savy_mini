@@ -28,7 +28,7 @@ public class UploadController{
     //上传
     @RequestMapping(value = "/upload",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Map<String,Object> up(MultipartFile fileData){
+    public Map<String,Object> up(MultipartFile fileData){//名称必须与在js中定义的name值一致
         System.out.println("调用上传文件接口！");
         System.out.println(fileData!=null?"not null":"null");
         Map<String,Object> resultMap =new HashMap<String,Object>();//根据前端富文本编辑器的要求，返回固定字段
@@ -65,7 +65,7 @@ public class UploadController{
 
         finalFilePath =  finalFilePath.substring(1);//windows环境中去除地址前面的
         System.out.print("返回给前端的地址为："+finalFilePath);
-        
+
         if(isSuccessFlag) {
             resultMap.put("success", true);  //保存成功
             resultMap.put("file_path",finalFilePath);
