@@ -15,7 +15,7 @@ import java.util.Map;
 //博客模块
 @RequestMapping(value = "/blog")
 @Controller
-public class BlogController {
+public class ContentController {
 
 
     //上传

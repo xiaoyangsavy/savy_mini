@@ -6,19 +6,242 @@
   <meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
   <meta name="author" content="Vincent Garreau" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-</head>
-<body>
+  <link rel="stylesheet" type="text/css" href="../../module/easyui/css/easyui.css">  <!-- 组件显示样式 -->
+  <link rel="stylesheet" type="text/css" href="../../module/easyui/css/icon.css">
+  <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="../../module/easyui/js/jquery.easyui.min.js"></script>    <!--组件交互逻辑 -->
+  <script type="text/javascript" src="../../module/easyui/js/esayui-extend.js"></script>   <!-- 组件扩展功能 -->
+  <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
 
-<div  >
-		 <button id="addDictionary" type="button">添加技术字典</button>
+  <script type="text/javascript">
+
+      //获取用户权限
+      var permission = getPermission();
+      console.log("permission="+permission);
+
+      //获取默认显示的菜单项
+      itemId= getUrlParams("itemId");
+      console.log("itemId="+itemId);
+
+
+      //左侧菜单栏数据
+      var data;
+
+      switch(permission){
+          case '-1':
+              data = [{
+                  text: '内容管理',
+                  iconCls: 'icon-more',
+                  state: 'open',
+                  children: [{
+                      text: '内容列表'
+                  },{
+                      text: '新增内容'
+                  }]
+              },{
+                  text: '留言管理',
+                  iconCls: 'icon-more',
+                  state: 'open',
+                  children: [{
+                      text: '留言列表'
+                  }]
+              },{
+                  text: '系统管理',
+                  iconCls: 'icon-more',
+                  state: 'open',
+                  children: [{
+                      text: '访客记录'
+                  }]
+              }];
+      break;
+          default:
+              data = [{
+                  text: '内容管理',
+                  iconCls: 'icon-more',
+                  state: 'open',
+                  children:[{
+                      text: '内容列表'
+                  },{
+                      text: '新增内容'
+                  }]
+              }];
+              break;
+      }
+
+      $(function() {
+          //左侧菜单栏默认选中第一个，或者选中当前页面关联的选项
+          var menus = $('#left-sidemenu');
+          var opts = menus.sidemenu("options");
+          if(itemId==null||itemId==undefined||itemId==""){
+              console.log("itemId:"+itemId);
+              itemId = '_easyui_sidemenu_2';
+          }
+          changeMenuSelect(menus, opts, itemId);
+
+          //首页加载数据
+          $('#dg').datagrid({loadFilter:pagerFilter}).datagrid('loadData', getData());
+      });
+
+  </script>
+</head>
+
+<body id="mypannel" class="easyui-layout">
+<div id="head" data-options="region:'north',border:false" style="height:80px;background:#C8E6F5;padding:10px;position:relative;">
+
+  <h3 align="center">内容列表</h3>
+  <label style="width:200px;height:20px;position:absolute;bottom:0;right: 120px"  >登录用户：<label id="deng_lu" style="width:100px;height:20px;position:absolute;bottom:0;right: 0px" >111</label></label>
+  <button style="width:80px;height:20px;position:absolute;bottom:0;right: 0;background-color:#f6ab00;color:#ffffff;font-weight:bold"  onclick="logout()" >退出</button>
+</div>
+<div data-options="region:'west',split:true,title:'内容类型'" style="width:150px;padding:10px;">
+
+  <div id="left-sidemenu" class="easyui-sidemenu" data-options="data:data,onSelect:selectItem"></div>
+
+</div>
+<div id="panel-center" data-options="region:'center',title:''">
+  <table id="dg" class="easyui-datagrid" title="内容列表" style=""
+         fit="true"  pagination="true" fitColumns="true"    data-options="
+				singleSelect:true,
+				pagination:true,
+				pageSize:10,
+                toolbar:'#tb'">
+    <thead>
+    <tr>
+      <!--<th data-options="field:'ck',checkbox:true"></th> -->
+      <th data-options="field:'title',width:80,align:'center'">标题</th>
+      <th data-options="field:'content',width:500,align:'left',formatter:showContent">概述</th>
+      <th data-options="field:'submitDate',width:50,align:'center'">发布时间</th>
+      <th data-options="field:'operation',width:100,align:'center',formatter:formatOper">操作</th>
+    </tr>
+    </thead>
+  </table>
+
+  <div id="tb" style="padding:2px 5px;">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    时间从: <input class="easyui-datebox" style="width:110px" data-options="formatter:myformatter,parser:myparser">
+    到: <input class="easyui-datebox" style="width:110px" data-options="formatter:myformatter,parser:myparser">
+    <div id="type" style="display:inline-block">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      类型:
+      <select class="easyui-combobox" panelHeight="auto" style="width:100px">
+        <option value="0">全部类型</option>
+        <option value="1">技术博客</option>
+        <option value="2">技术字典</option>
+        <option value="3">生活记录</option>
+        <option value="4">程序员趣事</option>
+      </select>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    分类:
+    <select class="easyui-combobox" panelHeight="auto" style="width:100px">
+      <option value="0">全部分类</option>
+    </select>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+  </div>
+
 </div>
 
-<!-- scripts -->
 
+<script>
+    function getData(){
+        var rows = [];
+        for(var i=1; i<=800; i++){
+            var amount = Math.floor(Math.random()*1000);
+            var price = Math.floor(Math.random()*1000);
+            rows.push({
+                contentId: 'id '+i,
+                title: '辽宁大学信息学院',
+                content: '辽宁大学信息学院座落于古朴厚重的崇山校区，现有用房总建筑面积8000余平方米，使用面积所属总计约5417平方米。学院前身为计算机科学系，于1984年在数学系计算数学专业基础上成立，设有计算机应用技术和计算机软件2个专业；1986年，计算机科学系与物理系计算机应用研究所合并成立计算机科学与技术系；1999年10月18日，学校以计算机科学与技术系、电子科学与工程系为主体，整合工商管理学院信息管理与信息技术专业组建信息科学与技术学院，时任国家领导人王文元同志亲笔题写院名；2007年更名为辽宁大学信息学院。多年来，学院秉承“明德精学 笃行致强”校训精神，以学科建设为龙头，以提高教学质量为核心，以社会化需求为导向，以人才培养为宗旨，不断调整课程结构、完善教学体系，为社会输出大量专业技术人才，获得了很好的社会效应。',
+                submitDate: '2019-01-01 12:02'
+            });
+        }
+        return rows;
+    }
+
+    function pagerFilter(data){
+        if (typeof data.length == 'number' && typeof data.splice == 'function'){	// is array
+            data = {
+                total: data.length,
+                rows: data
+            }
+        }
+        var dg = $(this);
+        var opts = dg.datagrid('options');
+        var pager = dg.datagrid('getPager');
+        pager.pagination({
+            onSelectPage:function(pageNum, pageSize){
+                opts.pageNumber = pageNum;
+                opts.pageSize = pageSize;
+                pager.pagination('refresh',{
+                    pageNumber:pageNum,
+                    pageSize:pageSize
+                });
+                dg.datagrid('loadData',data);
+            }
+        });
+        if (!data.originalRows){
+            data.originalRows = (data.rows);
+        }
+        var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
+        var end = start + parseInt(opts.pageSize);
+        data.rows = (data.originalRows.slice(start, end));
+        return data;
+    }
+
+
+    function addContent() {
+        window.location.href="contentEdit.html";
+    }
+
+
+
+    function editContent(object) {
+        window.location.href="contentEdit.html";
+    }
+
+    function detailContent(object) {
+        window.location.href='contentDetail.html';
+    }
+
+    function deleteContent(object) {
+        $.messager.confirm("", "确认删除吗？", function (r) {
+            if (r) {
+                $.messager.show({
+                    title:'提示',
+                    msg:'内容已删除',
+                    timeout:500,
+                    showType:'fade'
+                });
+            }
+        });
+
+    }
+</script>
 <script type="text/javascript">
-document.querySelector("#addDictionary").onclick = function(){
-        					window.location.href="addContent.html";
-        		}
+    function formatOper(val,row,index){
+        return '<a href="javascript:void(0)" onclick="detailContent(' + index
+            + ')">查看</a>&nbsp;&nbsp;<a class="replayButton" href="javascript:void(0)" onclick="editContent(' + index
+            + ')">编辑</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="deleteContent(' + index+')">删除</a>&nbsp;&nbsp;';
+
+    }
+
+    function showContent(val,row,index){
+        console.log("显示的内容:");
+        console.log(val);
+        console.log("该行获取的接口数据:");
+        console.log(row);
+        console.log("列号:");
+        console.log(index);
+        var showContent = '';
+        if (row.content.length > 40) row.content = row.content.substr(0, 40) + "...";
+        showContent=showContent+'&nbsp;&nbsp;'+row.content+'<br/>';
+        //showContent=showContent+'<img src="../../images/test.jpg" height="200" width="200"  />'
+        showContent=showContent+'<br/>';
+        return showContent;
+    }
+
+
+
 </script>
 </body>
 </html>
