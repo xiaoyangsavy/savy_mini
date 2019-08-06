@@ -6,12 +6,17 @@
   <meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
   <meta name="author" content="Vincent Garreau" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script> <!--需要放前面，供后面的js-->
+  <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
+
+  <!-- easyui样式-->
   <link rel="stylesheet" type="text/css" href="../../module/easyui/css/easyui.css">  <!-- 组件显示样式 -->
-  <link rel="stylesheet" type="text/css" href="../../module/easyui/css/icon.css">
-  <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../module/easyui/css/icon.css">     <!-- 组件显式图标 -->
   <script type="text/javascript" src="../../module/easyui/js/jquery.easyui.min.js"></script>    <!--组件交互逻辑 -->
   <script type="text/javascript" src="../../module/easyui/js/esayui-extend.js"></script>   <!-- 组件扩展功能 -->
-  <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
+  <!-- easyui样式结束-->
+
 
   <script type="text/javascript">
 
@@ -74,7 +79,7 @@
           var opts = menus.sidemenu("options");
           if(itemId==null||itemId==undefined||itemId==""){
               console.log("itemId:"+itemId);
-              itemId = '_easyui_sidemenu_2';
+              itemId = '_easyui_sidemenu_2';//从2开始
           }
           changeMenuSelect(menus, opts, itemId);
 
@@ -86,18 +91,19 @@
 </head>
 
 <body id="mypannel" class="easyui-layout">
-<div id="head" data-options="region:'north',border:false" style="height:80px;background:#C8E6F5;padding:10px;position:relative;">
+
+<div id="head" data-options="region:'north',border:false" style="height:80px;background:#C8E6F5;padding:10px;position:relative;"><!-- 头部视图 -->
 
   <h3 align="center">内容列表</h3>
   <label style="width:200px;height:20px;position:absolute;bottom:0;right: 120px"  >登录用户：<label id="deng_lu" style="width:100px;height:20px;position:absolute;bottom:0;right: 0px" >111</label></label>
   <button style="width:80px;height:20px;position:absolute;bottom:0;right: 0;background-color:#f6ab00;color:#ffffff;font-weight:bold"  onclick="logout()" >退出</button>
 </div>
-<div data-options="region:'west',split:true,title:'内容类型'" style="width:150px;padding:10px;">
 
+<div data-options="region:'west',split:true,title:'内容类型'" style="width:150px;padding:10px;"><!-- 左侧视图 -->
   <div id="left-sidemenu" class="easyui-sidemenu" data-options="data:data,onSelect:selectItem"></div>
-
 </div>
-<div id="panel-center" data-options="region:'center',title:''">
+
+<div id="panel-center" data-options="region:'center',title:''"> <!-- 主体视图 -->
   <table id="dg" class="easyui-datagrid" title="内容列表" style=""
          fit="true"  pagination="true" fitColumns="true"    data-options="
 				singleSelect:true,
@@ -150,8 +156,8 @@
             var price = Math.floor(Math.random()*1000);
             rows.push({
                 contentId: 'id '+i,
-                title: '辽宁大学信息学院',
-                content: '辽宁大学信息学院座落于古朴厚重的崇山校区，现有用房总建筑面积8000余平方米，使用面积所属总计约5417平方米。学院前身为计算机科学系，于1984年在数学系计算数学专业基础上成立，设有计算机应用技术和计算机软件2个专业；1986年，计算机科学系与物理系计算机应用研究所合并成立计算机科学与技术系；1999年10月18日，学校以计算机科学与技术系、电子科学与工程系为主体，整合工商管理学院信息管理与信息技术专业组建信息科学与技术学院，时任国家领导人王文元同志亲笔题写院名；2007年更名为辽宁大学信息学院。多年来，学院秉承“明德精学 笃行致强”校训精神，以学科建设为龙头，以提高教学质量为核心，以社会化需求为导向，以人才培养为宗旨，不断调整课程结构、完善教学体系，为社会输出大量专业技术人才，获得了很好的社会效应。',
+                title: '标题',
+                content: '内容非结构我估计是ISO和发给我你哦艾薇是否完好购物过后卫内容非结构我估计是ISO和发给我你哦艾薇是否完好购物过后卫内容非结构我估计是ISO和发给我你哦艾薇是否完好购物过后卫内容非结构我估计是ISO和发给我你哦艾薇是否完好购物过后卫',
                 submitDate: '2019-01-01 12:02'
             });
         }

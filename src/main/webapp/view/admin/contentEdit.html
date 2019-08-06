@@ -4,38 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
 
-	<link media="all" rel="stylesheet" type="text/css" href="../../js/simditor/styles/font-awesome.css" />
-    <link media="all" rel="stylesheet" type="text/css" href="../../js/simditor/styles/simditor.css" />
+	<link media="all" rel="stylesheet" type="text/css" href="../../css/admin/contentEdit.css" />
 
+	<!-- 富文本编辑器simditor组件，开始-->
+	<link media="all" rel="stylesheet" type="text/css" href="../../module/simditor/styles/font-awesome.css" />
+    <link media="all" rel="stylesheet" type="text/css" href="../../module/simditor/styles/simditor.css" />
+    <script type="text/javascript" src="../../module/simditor/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../../module/simditor/scripts/module.js"></script>
+    <script type="text/javascript" src="../../module/simditor/scripts/uploader.js"></script>
+    <script type="text/javascript" src="../../module/simditor/scripts/simditor.js"></script>
+	<!-- 富文本编辑器simditor组件，结束-->
 
-    	<script type="text/javascript" src="../../js/simditor/scripts/jquery.min.js"></script>
-    	<script type="text/javascript" src="../../js/simditor/scripts/module.js"></script>
-    	<script type="text/javascript" src="../../js/simditor/scripts/uploader.js"></script>
-    	<script type="text/javascript" src="../../js/simditor/scripts/simditor.js"></script>
-    	<style type="text/css">
-    		.wrapper {
-    		  width: 950px;
-    		  margin: 0 auto;
-    		}
-
-
-			.title-box {
-				margin-bottom: 24px;
-				background-color: #efefef;
-			}
-
-			#title {
-				display: inline-block;
-				width: 92%;
-				height: 40px;
-				line-height: 40px;
-				box-sizing: border-box;
-				padding-left: 16px;
-				border: none;
-				background-color: #efefef;
-				color: #4d4d4d;
-			}
-    	</style>
       </head>
  <body>
 			<div class="wrapper">
@@ -47,13 +26,38 @@
 				</div>
 
 
+				<div class="form-group row form-control-sm d-flex">
+					<label class="labTitle col-form-label">文章类型：</label>
+					<div class="txt-box">
+						<select id="selectType" class="mySelect">
+							<option value="0">请选择</option>
+						</select>
+						<span class="required">*</span>
+					</div>
+					<label class="labTitle col-form-label ml-24">博客分类：</label>
+					<div class="txt-box">
+						<select id="selectClass" class="mySelect">
+							<option value="0">选择分类</option>
+						</select>
+						<span class="required">*</span>
+					</div>
+				</div>
+
+
+
 				<br />
 				<textarea id="editor" name="content" autofocus></textarea>
 				<br />
-				<button type="submit" class="btn btn-default" onclick="submit()">提交</button>
+
 				<br />
-				<br />
-				<div class="alert alert-warning" role="alert">输入标题及内容，并对内容进行编辑。也可插入代码和上传本地图片 然后点击提交。</div>
+
+
+
+				<div class="txt-box">
+					<input id="btnPublish" type="button" class="btn btn-outline-danger" value="发布" title="发布">
+
+					<input id="btnCancel" type="button" class="btn btn-outline-secondary ml-24 btn-shanchu" title="返回列表页" value="返回">
+				</div>
 			</div>
   </body>
   <script type="text/javascript">

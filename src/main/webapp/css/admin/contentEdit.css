@@ -1,0 +1,132 @@
+<!--标题样式  -->
+.wrapper {
+    width: 950px;
+    margin: 0 auto;
+}
+
+
+.title-box {
+    margin-bottom: 24px;
+    background-color: #efefef;
+}
+
+#title {
+    display: inline-block;
+    width: 92%;
+    height: 40px;
+    line-height: 40px;
+    box-sizing: border-box;
+    padding-left: 16px;
+    border: none;
+    background-color: #efefef;
+    color: #4d4d4d;
+}
+
+
+<!--  按钮样式 -->
+
+<!-- 此处删掉影响button显式效果 -->
+.btn-outline-danger {}
+.btn-outline-danger {
+    border: 1px solid #C92027 !important;
+    color: #dc3545 !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border-color: #dc3545 !important;
+}
+
+
+
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    border: 1px solid #dc3545; /* Green */
+}
+
+
+
+.btn-outline-secondary {
+    color: #6c757d;
+    background-color: transparent;
+    background-image: none;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover{
+    color:#fff;
+    background-color:#6c757d;
+    border-color:#6c757d
+}
+
+
+
+
+<!--下拉框样式  -->
+button, input, optgroup, select, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    display:inline
+}
+
+span.required {
+    margin-left: 2px !important;
+    font-size: 12px !important;
+    color: #CA0C16 !important;
+}
+
+.d-flex {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+}
+
+.ml-24 {
+    margin-left: 24px;
+}
+
+label.labTitle {
+    margin-right: 6px;
+    padding: 0;
+    width: 72px;
+    line-height: 32px;
+}
+
+label.labTitle {
+    padding-bottom: 0;
+    font-size: 14px;
+    color: #4F4F4F;
+    text-align: right;
+}
+
+
+select.mySelect{
+    width: 138px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    background-color: #f4f4f4 !important;
+    box-sizing: border-box !important;
+    padding-left: 16px !important;
+}

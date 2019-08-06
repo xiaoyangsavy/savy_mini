@@ -74,22 +74,22 @@ function goWebpage(url){
 }
 
 
-//左侧菜单栏选中方法
+//管理员后台easyui左侧菜单栏选中方法
 function selectItem(item) {
     console.log("selectItem:");
     console.log(item.id);
     console.log("permission="+permission);
 //alert('点击了'+item.text);
     switch (item.text) {
-        case '类型管理':
+        case '内容列表':
             //页面跳转
-            // window.location.href='./type_management.html?permission='+permission;
+            window.location.href='./main.html';
             break;
-        case '用户管理':
-            // window.location.href='./user_management.html?permission='+permission;
+        case '新增内容':
+            window.location.href='./contentEdit.html';
             break;
         default:
-            // window.location.href='./main.html?permission='+permission+'&itemId='+item.id;
+            window.location.href='#';
             break;
     }
 }
