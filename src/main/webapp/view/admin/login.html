@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" media="screen" href="../../css/admin-style.css">
   <link rel="stylesheet" type="text/css" href="../../css/admin-reset.css"/>
+    <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
 </head>
 <body>
 
@@ -69,6 +70,8 @@
 					alert("登录成功");
 		}
 		document.querySelector("#visit-button").onclick = function(){
+	                    setUserId(0);
+
         					window.location.href="main.html";
         		}
 </script>

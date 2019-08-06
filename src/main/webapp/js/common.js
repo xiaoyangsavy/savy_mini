@@ -1,7 +1,7 @@
 var permission = '-1';	//权限
 var itemId = '';        //菜单栏所选选项编号
-var serverUrl = "http://210.30.128.69:8080/message/"	//服务器地址
-var fileUrl = "http://210.30.128.69:8080/"	//文件地址
+var serverUrl = "http://localhost:8080/savy/"	//服务器地址
+var fileUrl = "http://localhost:8080/"	//文件地址
 //用户名：username
 //用户编号：userId
 //是否已登录：isLogin
@@ -41,6 +41,21 @@ function delCookie(name)
     document.cookie = name+"="+""+";expires="+expdate.toGMTString()+";path=/";
 }
 
+//设置用户编号
+function setUserId(userId) {
+    setCookie("userId", userId);	//用户编号
+}
+
+//设置用户权限
+function setPermission(permission) {
+    setCookie("permission", permission);	//用户编号
+}
+
+//设置用户名
+function setUserName(username) {
+    setCookie("username", username);	//用户名
+}
+
 //获取用户权限
 function getPermission(){
     var permission = getCookie("permission");
@@ -52,6 +67,12 @@ function getPermission(){
 function getUsername(){
     var username = getCookie("username");
     return username;
+}
+
+//获取用户编号
+function getUserId(){
+    var userId = getCookie("userId");
+    return userId;
 }
 
 //获取页面跳转时传递的值

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
 
 	<link media="all" rel="stylesheet" type="text/css" href="../../css/admin/contentEdit.css" />
+    <script type="text/javascript" src="../../js/common.js"></script>
 
 	<!-- 富文本编辑器simditor组件，开始-->
 	<link media="all" rel="stylesheet" type="text/css" href="../../module/simditor/styles/font-awesome.css" />
@@ -43,8 +44,6 @@
 					</div>
 				</div>
 
-
-
 				<br />
 				<textarea id="editor" name="content" autofocus></textarea>
 				<br />
@@ -54,7 +53,7 @@
 
 
 				<div class="txt-box">
-					<input id="btnPublish" type="button" class="btn btn-outline-danger" value="发布" title="发布">
+					<input id="btnPublish" type="button" class="btn btn-outline-danger" value="发布" title="发布" onclick="submit()">
 
 					<input id="btnCancel" type="button" class="btn btn-outline-secondary ml-24 btn-shanchu" title="返回列表页" value="返回">
 				</div>
@@ -84,8 +83,57 @@
 	  function submit(){
 		var title = $('#title').val();
 		var editor = $('#editor').val();
+		var selectType = $('#selectType').val();
+		var selectClass = $('#selectClass').val();
+          var userId =  getUserId();
+
+             if(userId == null || userId == undefined || userId == ''){
+                         window.location.href="login.html";
+                  }
+
 		console.log(title);
         console.log(editor);
+        console.log(selectType == null);
+        if(selectType == null || selectType == undefined || selectType == ''){
+                alert("请选择类型");
+        }
+
+        if(selectClass == null || selectClass == undefined || selectClass == ''){
+                  alert("请选择分类");
+         }
+
+
+var jsonObject = '{';
+	jsonObject+='"title":"'+title+'"';
+	jsonObject+=',"content":"'+editor+'"';
+	jsonObject+=',"contentTypeId":'+selectType
+	jsonObject+=',"contentClassId":'+selectClass
+	jsonObject+=',"userId":'+userId;
+	jsonObject+='}'
+	console.log(jsonObject);
+
+	$.ajax({
+        type: "POST",
+        url:  serverUrl+"content/add",
+        contentType: "application/json",
+		data : jsonObject,
+        success: function (data) {
+			console.log("call content/add");
+			console.log(data);
+	 		if(data.status==200){	//调用成功
+			 console.log("调用成功！");
+			 alert("发布成功！");
+			 //window.location.href='typeList.html';
+			}else{
+				console.log(data.message);
+			}
+        },
+        error: function (e) {
+			console.log(e);
+            console.log("接口调用失败，请重试！");
+        }
+    });
+
 	  }
   </script>
 </html>
