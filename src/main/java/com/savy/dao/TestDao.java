@@ -1,4 +1,4 @@
-package com.savy.dao.test;
+package com.savy.dao;
 
 public class TestDao {
 

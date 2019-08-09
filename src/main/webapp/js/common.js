@@ -1,7 +1,7 @@
 var permission = '-1';	//权限
 var itemId = '';        //菜单栏所选选项编号
-var serverUrl = "http://localhost:8080/savy/"	//服务器地址
-var fileUrl = "http://localhost:8080/"	//文件地址
+var serverUrl = "http://localhost:8080/savy"	//服务器地址
+var fileUrl = "http://localhost:8080"	//文件地址
 //用户名：username
 //用户编号：userId
 //是否已登录：isLogin
@@ -113,4 +113,11 @@ function selectItem(item) {
             window.location.href='#';
             break;
     }
+}
+
+
+//将引号转义
+function replaceQuotationMark(value){
+    var value=value.toString().replace(new RegExp('(["\"])', 'g'),"\\\"");
+    return value;
 }
