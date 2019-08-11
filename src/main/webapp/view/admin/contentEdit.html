@@ -30,7 +30,7 @@
 				<div class="form-group row form-control-sm d-flex">
 					<label class="labTitle col-form-label">文章类型：</label>
 					<div class="txt-box">
-						<select id="selectType" class="mySelect">
+                                <select id="selectType" class="mySelect" onchange="changeContentTyepe(this.options[this.options.selectedIndex].value)">
 							<option value="0">请选择</option>
 						</select>
 						<span class="required">*</span>
@@ -38,7 +38,7 @@
 					<label class="labTitle col-form-label ml-24">博客分类：</label>
 					<div class="txt-box">
 						<select id="selectClass" class="mySelect">
-							<option value="0">选择分类</option>
+							<option value="0">请选择</option>
 						</select>
 						<span class="required">*</span>
 					</div>
@@ -78,6 +78,75 @@
 			}
 		});
   	})
+
+
+
+//获取类别和分类选项列表
+    $.ajax({
+        type: "GET",
+        url:  serverUrl+"/content/getType",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("call content/getType");
+            console.log(data);
+            if(data.status==200){	//调用成功
+                console.log("调用成功！");
+                console.log("接口数据长度："+data.data.length);
+                var html = "";
+                html += '<option value="-1">请选择</option>';
+                for(var i = 0,len = data.data.length; i < len; i++){
+                    console.log(data.data[i]);
+                    var item = data.data[i];
+                    html += '<option value="'+item.contentTypeId+'">'+item.contentTypeName+'</option>';
+                }
+                document.getElementById("selectType").innerHTML = html;
+
+            }else{
+                console.log(data.message);
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("接口调用失败，请重试！");
+        }
+    });
+
+  	//类别选择改变，重新获取分类列表
+  	function changeContentTyepe(itemId){
+  	    // alert(itemId);
+        $.ajax({
+            type: "GET",
+            url:  serverUrl+"/content/getClass?contentTypeId="+itemId,
+            contentType: "application/json",
+            success: function (data) {
+                console.log("call content/getClass");
+                console.log(data);
+                if(data.status==200){	//调用成功
+                    console.log("调用成功！");
+                    console.log("接口数据长度："+data.data.length);
+                    var html = "";
+                    html += '<option value="-1">请选择</option>';
+                    for(var i = 0,len = data.data.length; i < len; i++){
+                        console.log(data.data[i]);
+                        var item = data.data[i];
+                        html += '<option value="'+item.contentClassId+'">'+item.contentClassName+'</option>';
+                    }
+                    document.getElementById("selectClass").innerHTML = html;
+
+                }else{
+                    console.log(data.message);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                console.log("接口调用失败，请重试！");
+            }
+        });
+
+	}
+
+
+
 
 	//提交内容
 	  function submit(){

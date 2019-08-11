@@ -1,7 +1,11 @@
 package com.savy.service;
 
+import com.savy.dao.ContentClassDao;
 import com.savy.dao.ContentDao;
+import com.savy.dao.ContentTypeDao;
 import com.savy.model.Content;
+import com.savy.model.ContentClass;
+import com.savy.model.ContentType;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,10 @@ public class ContentService {
 
     @Autowired
     ContentDao contentDao;
+    @Autowired
+    ContentTypeDao contentTypeDao;
+    @Autowired
+    ContentClassDao contentClassDao;
 
     //新增内容
     public boolean insertContent(int contentTypeId, int contentClassId, String title, String content, int userId){
@@ -62,10 +70,23 @@ public class ContentService {
         List<Content> contentList = contentDao.selectAllContent(currentPage,limitSize,contentTypeId,contentClassId,keyword);
         return contentList;
     }
+
     //查询内容数目
     public int selectContentAmount(@Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("keyword") String keyword){
         int contentAmount = 0;
         contentAmount = contentDao.selectContentAmount(contentTypeId,contentClassId,keyword);
         return contentAmount;
+    }
+
+    //查询全部内容类别
+    public List<ContentType> selectAllContentType(){
+        List<ContentType> contentTypeList = contentTypeDao.selectAllContentType();
+        return contentTypeList;
+    }
+
+    //查询全部内容分类，根据内容类别编号
+    public List<ContentClass> selectAllContentClass(int contentTypeId){
+        List<ContentClass> contentClassList = contentClassDao.selectAllContentClass(contentTypeId);
+        return contentClassList;
     }
 }

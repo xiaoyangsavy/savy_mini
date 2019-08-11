@@ -1,6 +1,8 @@
 package com.savy.controller;
 
 
+import com.savy.model.ContentClass;
+import com.savy.model.ContentType;
 import com.savy.service.ContentService;
 import com.savy.util.Result;
 import com.savy.util.ResultStatus;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 //博客模块
@@ -23,8 +26,13 @@ public class ContentController {
     ContentService contentService;
 
     private static final Logger logger = Logger.getLogger(ContentController.class);
-    //上传
-    @RequestMapping(value = "/add",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+    /**
+     * 上传内容
+     * @param myMap
+     * @return
+     */
+    @RequestMapping(value = "/add",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)  //以json格式返回
     @ResponseBody
     public Result addContent(@RequestBody Map<String,Object> myMap) {//名称必须与在js中定义的name值一致
         Result result=new Result();
@@ -49,5 +57,28 @@ public class ContentController {
             result.setMessage("添加信息失败！");
         }
         return result;
+    }
+
+
+    /**
+     * 获取所有内容类别
+     * @return  所有内容类别
+     */
+    @RequestMapping(value = "/getType",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<List<ContentType>> getContentType() {
+        List<ContentType> resultList = contentService.selectAllContentType();
+        return Result.newSuccessResult(resultList);
+    }
+
+    /**
+     * 获取所有内容分类
+     * @return  所有内容分类
+     */
+    @RequestMapping(value = "/getClass",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<List<ContentClass>> getContentClass(int contentTypeId) {
+        List<ContentClass> resultList = contentService.selectAllContentClass(contentTypeId);
+        return Result.newSuccessResult(resultList);
     }
 }
