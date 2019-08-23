@@ -5,17 +5,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 /**
- * 博客
+ * 内容
  */
 public class Content {
 
-    private int contentId;             //博客编号
-    private int contentTypeId;         //博客类型编号
-    private String title;       //博客标题
-    private String content;     //博客内容
+    private int contentId;             //内容编号
+    private int contentTypeId;         //内容类型编号
+    private int contentClassId;         //内容分类编号
+    private String title;       //内容标题
+    private String content;     //内容主体
+    private String overview;    //内容概述
     //需要指定时区为东八区，不然相差时差8小时
     @JsonFormat(pattern="yyyy-MM-dd  HH:mm:ss",timezone="GMT+8")
-    private Date submitDate;   //博文发布时间
+    private Date submitDate;   //内容发布时间
+
+    private String contentTypeName;//内容类型名称
 
     public int getContentId() {
         return contentId;
@@ -31,6 +35,14 @@ public class Content {
 
     public void setContentTypeId(int contentTypeId) {
         this.contentTypeId = contentTypeId;
+    }
+
+    public int getContentClassId() {
+        return contentClassId;
+    }
+
+    public void setContentClassId(int contentClassId) {
+        this.contentClassId = contentClassId;
     }
 
     public String getTitle() {
@@ -49,11 +61,27 @@ public class Content {
         this.content = content;
     }
 
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
     public Date getSubmitDate() {
         return submitDate;
     }
 
     public void setSubmitDate(Date submitDate) {
         this.submitDate = submitDate;
+    }
+
+    public String getContentTypeName() {
+        return contentTypeName;
+    }
+
+    public void setContentTypeName(String contentTypeName) {
+        this.contentTypeName = contentTypeName;
     }
 }

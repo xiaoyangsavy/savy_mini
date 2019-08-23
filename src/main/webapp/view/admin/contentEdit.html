@@ -31,14 +31,14 @@
 					<label class="labTitle col-form-label">文章类型：</label>
 					<div class="txt-box">
                                 <select id="selectType" class="mySelect" onchange="changeContentTyepe(this.options[this.options.selectedIndex].value)">
-							<option value="0">请选择</option>
+							<option value="-1">请选择</option>
 						</select>
 						<span class="required">*</span>
 					</div>
 					<label class="labTitle col-form-label ml-24">博客分类：</label>
 					<div class="txt-box">
 						<select id="selectClass" class="mySelect">
-							<option value="0">请选择</option>
+							<option value="-1">请选择</option>
 						</select>
 						<span class="required">*</span>
 					</div>
@@ -149,62 +149,85 @@
 
 
 	//提交内容
-	  function submit(){
-		var title = $('#title').val();
-		var editor = $('#editor').val();
-		var selectType = $('#selectType').val();
-		var selectClass = $('#selectClass').val();
-          var userId =  getUserId();
+	  function submit() {
 
-             if(userId == null || userId == undefined || userId == ''){
-                         window.location.href="login.html";
+          var flag = true;
+
+          var title = $('#title').val();
+          var content = $('#editor').val();
+          var selectType = $('#selectType').val();
+          var selectClass = $('#selectClass').val();
+          var userId = getUserId();
+
+          var overview = removeTAG(content);	//概述
+          if (overview.length > 40) {	//如果内容过长，则截取开头部分
+              overview = overview.substr(0, 40) + "...";
+          }
+
+          console.log(content);
+          content = encodeURI(content);	//将内容中的双引号进行转码，防止json拼接错误
+          console.log(content);
+          console.log(decodeURI(content));//使用此方法可以解码
+
+
+          if (userId == null || userId == undefined || userId == '') {
+              window.location.href = "login.html";
+          }
+
+          console.log(title);
+          console.log(editor);
+          console.log(selectType);
+          console.log(selectClass);
+          if (selectType == null || selectType == undefined || selectType == '' || selectType == -1) {
+              flag = false;
+              alert("请选择类型");
+          }else   if (selectClass == null || selectClass == undefined || selectClass == '' || selectClass == -1) {
+              flag = false;
+              alert("请选择分类");
+          }
+
+
+          if (flag) {
+          var jsonObject = '{';
+          jsonObject += '"title":"' + title + '"';
+          jsonObject += ',"content":"' + content + '"';
+          jsonObject += ',"overview":"' + overview + '"';
+          jsonObject += ',"contentTypeId":' + selectType
+          jsonObject += ',"contentClassId":' + selectClass
+          jsonObject += ',"userId":' + userId;
+          jsonObject += '}'
+          console.log(jsonObject);
+
+          $.ajax({
+              type: "POST",
+              url: serverUrl + "/content/add",
+              contentType: "application/json",
+              data: jsonObject,
+              success: function (data) {
+                  console.log("call content/add");
+                  console.log(data);
+                  if (data.status == 200) {	//调用成功
+                      console.log("调用成功！");
+                      alert("发布成功！");
+                      //window.location.href='typeList.html';
+                  } else {
+                      console.log(data.message);
                   }
+              },
+              error: function (e) {
+                  console.log(e);
+                  console.log("接口调用失败，请重试！");
+              }
+          });
 
-		console.log(title);
-        console.log(editor);
-        console.log(selectType == null);
-        if(selectType == null || selectType == undefined || selectType == ''){
-                alert("请选择类型");
-        }
-
-        if(selectClass == null || selectClass == undefined || selectClass == ''){
-                  alert("请选择分类");
-         }
-
-var content = encodeURI(editor);	//将内容中的双引号进行转码，防止json拼接错误
-console.log(content);
-console.log(decodeURI(content));//使用此方法可以解码
-var jsonObject = '{';
-	jsonObject+='"title":"'+title+'"';
-	jsonObject+=',"content":"'+content+'"';
-	jsonObject+=',"contentTypeId":'+selectType
-	jsonObject+=',"contentClassId":'+selectClass
-	jsonObject+=',"userId":'+userId;
-	jsonObject+='}'
-	console.log(jsonObject);
-
-	$.ajax({
-        type: "POST",
-        url:  serverUrl+"/content/add",
-        contentType: "application/json",
-		data : jsonObject,
-        success: function (data) {
-			console.log("call content/add");
-			console.log(data);
-	 		if(data.status==200){	//调用成功
-			 console.log("调用成功！");
-			 alert("发布成功！");
-			 //window.location.href='typeList.html';
-			}else{
-				console.log(data.message);
-			}
-        },
-        error: function (e) {
-			console.log(e);
-            console.log("接口调用失败，请重试！");
-        }
-    });
-
+      }else{
+console.log("数据验证失败，本次无法提交！");
+	}
 	  }
+
+//去除富文本编辑器中的标签，只保留文字内容
+    function removeTAG(str){
+        return str.replace(/<[^>]+>/g, "");
+    }
   </script>
 </html>

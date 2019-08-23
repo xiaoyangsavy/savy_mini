@@ -1,5 +1,6 @@
 package com.savy.service;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.savy.dao.ContentClassDao;
 import com.savy.dao.ContentDao;
 import com.savy.dao.ContentTypeDao;
@@ -26,11 +27,11 @@ public class ContentService {
     ContentClassDao contentClassDao;
 
     //新增内容
-    public boolean insertContent(int contentTypeId, int contentClassId, String title, String content, int userId){
+    public boolean insertContent(int contentTypeId, int contentClassId, String title, String content,  String overview, int userId){
         boolean flag = false;
         int result = 0;
         try {
-            result = contentDao.insertContent(contentTypeId, contentClassId, title, content, userId);
+            result = contentDao.insertContent(contentTypeId, contentClassId, title, content, overview,userId);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -40,9 +41,9 @@ public class ContentService {
         return flag;
     }
     //修改内容
-    public boolean updateContent(int contentId,int contentTypeId,int contentClassId,String title,String content,int userId){
+    public boolean updateContent(int contentId,int contentTypeId,int contentClassId,String title,String content,String overview){
         boolean flag = false;
-        int result = contentDao.updateContent(contentId,contentTypeId,contentClassId,title,content,userId);
+        int result = contentDao.updateContent(contentId,contentTypeId,contentClassId,title,content,overview);
         if(result>=1){  //result为受影响的行，0表示操作失败
             flag = true;
         }
@@ -61,32 +62,55 @@ public class ContentService {
     //查询单个内容
     public  Content selectContentById(int contentId){
         Content content = null;
-        content = contentDao.selectContentById(contentId);
+        try {
+            content = contentDao.selectContentById(contentId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return  content;
     }
 
     //查询全部内容，根据条件
-    public List<Content> selectAllContent(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize,  @Param("contentTypeId") Integer contentTypeId, @Param("contentClassId") Integer contentClassId, @Param("keyword") String keyword){
-        List<Content> contentList = contentDao.selectAllContent(currentPage,limitSize,contentTypeId,contentClassId,keyword);
+    public List<Content> selectAllContent(int currentPage, int limitSize,  Integer contentTypeId, Integer contentClassId,  String keyword){
+        List<Content> contentList = null;
+        try {
+        contentList = contentDao.selectAllContent(currentPage,limitSize,contentTypeId,contentClassId,keyword);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return contentList;
     }
 
     //查询内容数目
-    public int selectContentAmount(@Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("keyword") String keyword){
+    public int selectContentAmount(Integer contentTypeId, Integer contentClassId,String keyword){
         int contentAmount = 0;
+        try {
         contentAmount = contentDao.selectContentAmount(contentTypeId,contentClassId,keyword);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         return contentAmount;
     }
 
     //查询全部内容类别
     public List<ContentType> selectAllContentType(){
-        List<ContentType> contentTypeList = contentTypeDao.selectAllContentType();
+        List<ContentType> contentTypeList = null;
+        try {
+        contentTypeList = contentTypeDao.selectAllContentType();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
         return contentTypeList;
     }
 
     //查询全部内容分类，根据内容类别编号
     public List<ContentClass> selectAllContentClass(int contentTypeId){
-        List<ContentClass> contentClassList = contentClassDao.selectAllContentClass(contentTypeId);
+        List<ContentClass> contentClassList = null;
+                    try {
+        contentClassList = contentClassDao.selectAllContentClass(contentTypeId);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
         return contentClassList;
     }
 }

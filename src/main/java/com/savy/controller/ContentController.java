@@ -1,11 +1,13 @@
 package com.savy.controller;
 
 
+import com.savy.model.Content;
 import com.savy.model.ContentClass;
 import com.savy.model.ContentType;
 import com.savy.service.ContentService;
 import com.savy.util.Result;
 import com.savy.util.ResultStatus;
+import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,12 +48,21 @@ public class ContentController {
         int contentClassId=(Integer)myMap.get("contentClassId");
         String title=String.valueOf(myMap.get("title"));
         String content=String.valueOf(myMap.get("content"));
+        String overview=String.valueOf(myMap.get("overview"));
+        System.out.println("content:"+content);
+        try {
+            content = URLDecoder.decode(content,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("content:"+content);
+
         int userId=(Integer) myMap.get("userId");
 
         logger.info("/content/add 接口接收到的参数为：");
         logger.info("contentTypeId："+contentTypeId+"contentClassId："+contentClassId+"title:"+title+"content:"+content+"userId:"+userId);
 
-        flag = contentService.insertContent(contentTypeId,contentClassId,title,content,userId); //调用插入方法
+        flag = contentService.insertContent(contentTypeId,contentClassId,title,content,overview,userId); //调用插入方法
 
         if(flag){
             result.setResultStatus(ResultStatus.SUCCESS);
@@ -57,6 +72,30 @@ public class ContentController {
             result.setMessage("添加信息失败！");
         }
         return result;
+    }
+
+    /**
+     * 获取所有内容分类
+     * @return  所有内容分类
+     */
+    @RequestMapping(value = "/getContentList",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<Map<String,Object>> getContentList(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize, @RequestParam(value="contentTypeId", required=false) Integer contentTypeId, @RequestParam(value="contentClassId", required=false) Integer contentClassId, @RequestParam(value="keyword", required=false) String keyword){
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        List<Content> resultList = null;
+        int count = 0;
+        try{
+        count = contentService.selectContentAmount(contentTypeId,contentClassId,keyword);
+        resultList = contentService.selectAllContent(currentPage,limitSize,contentTypeId,contentClassId,keyword);
+
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+        System.out.println("resultList size="+resultList.size());
+        System.out.println("count="+count);
+        resultMap.put("data",resultList);
+        resultMap.put("count",count);
+        return Result.newSuccessResult(resultMap);
     }
 
 
@@ -80,5 +119,18 @@ public class ContentController {
     public Result<List<ContentClass>> getContentClass(int contentTypeId) {
         List<ContentClass> resultList = contentService.selectAllContentClass(contentTypeId);
         return Result.newSuccessResult(resultList);
+    }
+
+
+    /**
+     * 获取内容详情
+     * @return  所有内容详情
+     */
+    @RequestMapping(value = "/getContentDetail",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<Content> getContentDetail(int contentId) {
+        System.out.println("parameter is :"+contentId);
+        Content result = contentService.selectContentById(contentId);
+        return Result.newSuccessResult(result);
     }
 }

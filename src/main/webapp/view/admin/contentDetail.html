@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+  <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
+    <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
+<head>
+<style type="text/css">
+
+.article-header {
+    border-bottom: 1px solid #e0e0e0;
+    padding-top: 16px;
+    z-index: 9;
+    background-color: #fff;
+}
+
+ .title-article {
+    font-size: 24px;
+    word-wrap: break-word;
+}
+
+ .article-bar-top  {
+    color: #858585;
+    width: 88%;
+    height: 24px;
+    overflow: hidden;
+}
+</style>
+
+<script type="text/javascript">
+    //获取url传入参数
+      contentId= getUrlParams("contentId");
+      console.log("contentId="+contentId);
+//获取内容
+    $.ajax({
+        type: "GET",
+        url:  serverUrl+"/content/getContentDetail?contentId="+contentId,
+        contentType: "application/json",
+        success: function (data) {
+            console.log("call content/getContentDetail");
+            console.log(data);
+            if(data.status==200){	//调用成功
+                console.log("调用成功！");
+                console.log("接口数据："+data);
+                var title = data.data.title;
+                var submitDate = data.data.submitDate;
+                var content = data.data.content;
+                document.getElementById("content_views").innerHTML = content;
+                $("#title").text(title);
+                 $("#submitDate").text(submitDate);
+
+            }else{
+                console.log(data.message);
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("接口调用失败，请重试！");
+        }
+    });
+</script>
+</head>
+
+ <body>
+<div class="article-header">
+            <div >
+               <h1 id="title" class="title-article">加载中...</h1>
+            </div>
+                <div class="article-bar-top">
+                    <span id="submitDate">加载中...</span>
+                </div>
+        </div>
+
+ <div class="htmledit_views" id="content_views">
+加载中...
+
+ </div>
+ </body>
+ </html>

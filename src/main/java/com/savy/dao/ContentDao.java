@@ -11,9 +11,9 @@ import java.util.List;
 public interface ContentDao {
 
     //新增内容
-    int insertContent(@Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("title") String title, @Param("content") String content, @Param("userId") int userId);
+    int insertContent(@Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("title") String title, @Param("content") String content,@Param("overview") String overview,  @Param("userId") int userId);
     //修改内容
-    int updateContent(@Param("contentId") int contentId,@Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("title") String title, @Param("content") String content, @Param("userId") int userId);
+    int updateContent(@Param("contentId") int contentId,@Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("title") String title, @Param("content") String content, @Param("overview") String overview);
     //删除内容
     int deleteContent(@Param("contentId") int contentId);
     //查询单个内容
@@ -21,6 +21,6 @@ public interface ContentDao {
     //查询全部内容，根据条件
     List<Content> selectAllContent(@Param("currentPage") int currentPage,@Param("limitSize") int limitSize, @Param("contentTypeId") Integer contentTypeId, @Param("contentClassId") Integer contentClassId, @Param("keyword") String keyword);
     //查询内容数目
-    int selectContentAmount( @Param("contentTypeId") int contentTypeId, @Param("contentClassId") int contentClassId, @Param("keyword") String keyword);
+    int selectContentAmount( @Param("contentTypeId") Integer contentTypeId, @Param("contentClassId") Integer contentClassId, @Param("keyword") String keyword);
 
 }
