@@ -54,7 +54,7 @@ public class UploadController{
             String  finalFileName = CommonUtil.generateRandomFilename()+fileSuffix;//生成随机文件名
             //String filePath = "E:/test_load/";
             String  finalFilePath = filePathString.toString()+File.separator+ finalFileName;//最终要保存的文件名
-            System.out.print("最终保存的文件名为："+finalFilePath);
+            System.out.println("最终保存的文件名为："+finalFilePath);
             File  finalFile = new File( finalFilePath);
         try {
             fileData.transferTo(finalFile);// 将传入的文件保存到指定位置
@@ -64,7 +64,10 @@ public class UploadController{
         }
 
         finalFilePath =  finalFilePath.substring(1);//windows环境中去除地址前面的
-        System.out.print("返回给前端的地址为："+finalFilePath);
+        System.out.println("文件的绝对地址为："+finalFilePath);//图片的实际保存位置
+        //将图片的绝对地址更改为相对地址,用于图片在浏览器中显示
+        finalFilePath = finalFilePath.replace("D:/WorkSpace/\\SavyFile\\Image","/photo");
+        System.out.println("返回给前端的地址为："+finalFilePath);
 
         if(isSuccessFlag) {
             resultMap.put("success", true);  //保存成功
