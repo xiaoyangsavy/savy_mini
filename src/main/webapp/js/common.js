@@ -1,5 +1,5 @@
 var permission = '-1';	//权限
-var itemId = '';        //菜单栏所选选项编号
+//var itemId = '';        //菜单栏所选选项编号
 var serverUrl = "http://localhost:8080/savy"	//服务器地址
 var fileUrl = "http://localhost:8080"	//文件地址
 //用户名：username
@@ -47,9 +47,9 @@ function setUserId(userId) {
 }
 
 //设置用户权限
-function setPermission(permission) {
-    setCookie("permission", permission);	//用户编号
-}
+// function setPermission(permission) {
+//     setCookie("permission", permission);	//用户编号
+// }
 
 //设置用户名
 function setUserName(username) {
@@ -66,12 +66,18 @@ function getPermission(){
 //获取用户名
 function getUsername(){
     var username = getCookie("username");
+    if(username == null || username == undefined || username == ''){
+        username = "访客";    //访客
+    }
     return username;
 }
 
 //获取用户编号
 function getUserId(){
     var userId = getCookie("userId");
+    if(userId == null || userId == undefined || userId == 0){
+        userId = 0; //访客
+    }
     return userId;
 }
 
@@ -88,36 +94,84 @@ function getUrlParams(key) {
 //线程休眠
 function sleep(numberMillis) { var now = new Date(); var exitTime = now.getTime() + numberMillis; while (true) { now = new Date(); if (now.getTime() > exitTime) return true; } }
 
-
 //跳转到指定网页
 function goWebpage(url){
     window.location.href=url;
 }
 
-
-//管理员后台easyui左侧菜单栏选中方法
-function selectItem(item) {
-    console.log("selectItem:");
-    console.log(item.id);
-    console.log("permission="+permission);
-//alert('点击了'+item.text);
-    switch (item.text) {
-        case '内容列表':
-            //页面跳转
-            window.location.href='./main.html';
-            break;
-        case '新增内容':
-            window.location.href='./contentEdit.html';
-            break;
-        default:
-            window.location.href='#';
-            break;
+//跳转到指定网页,并制定是否打开为新页面
+function goWebpage(url,isOpenNewPage){
+    if(isOpenNewPage){
+        window.open(url);
+    }else{
+    window.location.href=url;
     }
 }
+
 
 
 //将引号转义
 function replaceQuotationMark(value){
     var value=value.toString().replace(new RegExp('(["\"])', 'g'),"\\\"");
     return value;
+}
+
+
+//获取首页顶部菜单项
+function getHeadMenuItem() {
+    //获取技术博客菜单项
+    $.ajax({
+        type: "GET",
+        url: serverUrl + "/content/getClass?contentTypeId=1",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("call content/getClass");
+            console.log(data);
+            if (data.status == 200) {	//调用成功
+                console.log("调用成功!");
+                console.log("接口数据长度:" + data.data.length);
+                var html = "";
+                for (var i = 0, len = data.data.length; i < len; i++) {
+                    console.log(data.data[i]);
+                    var item = data.data[i];
+                    //通过js跳转页面时需要加入项目二级地址savy，无法通过相对路径之间跳转
+                    html += '<li id="' + item.contentClassId + '" class="menu-sub-item"><a href="'+serverUrl+'/view/admin/contentList.html?contentClassId='+item.contentClassId+'">' + item.contentClassName + '</a></li>';
+                }
+                document.getElementById("technologyBlogUl").innerHTML = html;
+            } else {
+                console.log(data.message);
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("接口调用失败,请重试!");
+        }
+    });
+    //获取技术字典菜单项
+    $.ajax({
+        type: "GET",
+        url: serverUrl + "/content/getClass?contentTypeId=2",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("call content/getClass");
+            console.log(data);
+            if (data.status == 200) {	//调用成功
+                console.log("调用成功!");
+                console.log("接口数据长度:" + data.data.length);
+                var html = "";
+                for (var i = 0, len = data.data.length; i < len; i++) {
+                    console.log(data.data[i]);
+                    var item = data.data[i];
+                    html += '<li id="' + item.contentClassId + '" class="menu-sub-item"><a href="'+serverUrl+'/view/admin/contentList.html?contentClassId='+item.contentClassId+'">' + item.contentClassName + '</a></li>';
+                }
+                document.getElementById("technologyDictionaryUl").innerHTML = html;
+            } else {
+                console.log(data.message);
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("接口调用失败,请重试!");
+        }
+    });
 }

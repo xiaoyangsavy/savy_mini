@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <title>管理员登录</title>
   <meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
   <meta name="author" content="Vincent Garreau" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" media="screen" href="../../css/admin-style.css">
   <link rel="stylesheet" type="text/css" href="../../css/admin-reset.css"/>
+   <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
 </head>
 <body>
@@ -20,14 +21,14 @@
 			<div class="login-center clearfix">
 				<div class="login-center-img"><img src="../../images/login-name.png"/></div>
 				<div class="login-center-input">
-					<input type="text" name="" value="" placeholder="请输入您的用户名" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的用户名'"/>
+					<input id="username" type="text" name="" value="" placeholder="请输入您的用户名" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的用户名'"/>
 					<div class="login-center-input-text">用户名</div>
 				</div>
 			</div>
 			<div class="login-center clearfix">
 				<div class="login-center-img"><img src="../../images/login-password.png"/></div>
 				<div class="login-center-input">
-					<input type="password" name=""value="" placeholder="请输入您的密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的密码'"/>
+					<input id="password" type="password" name=""value="" placeholder="请输入您的密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的密码'"/>
 					<div class="login-center-input-text">密码</div>
 				</div>
 			</div>
@@ -41,37 +42,57 @@
 		<div class="sk-rotating-plane"></div>
 </div>
 
-<!-- scripts -->
+<!-- 背景动画js -->
 <script src="../../js/particles.min.js"></script>
 <script src="../../js/app.js"></script>
+<!-- 接口调用js -->
 <script type="text/javascript">
-	function hasClass(elem, cls) {
-	  cls = cls || '';
-	  if (cls.replace(/\s/g, '').length == 0) return false; //当cls没有参数时，返回false
-	  return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ');
-	}
-
-	function addClass(ele, cls) {
-	  if (!hasClass(ele, cls)) {
-	    ele.className = ele.className == '' ? cls : ele.className + ' ' + cls;
-	  }
-	}
-
-	function removeClass(ele, cls) {
-	  if (hasClass(ele, cls)) {
-	    var newClass = ' ' + ele.className.replace(/[\t\r\n]/g, '') + ' ';
-	    while (newClass.indexOf(' ' + cls + ' ') >= 0) {
-	      newClass = newClass.replace(' ' + cls + ' ', ' ');
-	    }
-	    ele.className = newClass.replace(/^\s+|\s+$/g, '');
-	  }
-	}
+	 //登录
 		document.querySelector(".login-button").onclick = function(){
-					alert("登录成功");
+                    var username = $("#username").val();
+                    var password = $("#password").val();
+                    console.log("username="+username+";password="+password);
+                    if(username == null || username == undefined || username == ''|| username == '用户名'){
+                    	alert("用户名不能为空！");
+                    }else if(password == null || password == undefined || password == ''|| password == '密码'){
+                    	alert("密码不能为空！");
+                    }else{
+                    	 $.ajax({
+                            type: "POST",
+                            url:  serverUrl+"/user/login",
+                            contentType: "application/json",
+                    		data : JSON.stringify({
+                    				"userName": username,
+                    				"password": password
+                    			}),
+                            success: function (data) {
+                    			console.log("call user/login");
+                    			console.log("userName: "+username);
+                    			console.log("password: "+password);
+                    			console.log(data);
+                    	 		if(data.status==200){	//调用成功
+                    			setCookie("isLogin", true);		//已登录
+                    			setUserName(username);	//用户名
+                    			setUserId(data.data.userId);	//用户编号
+                    			goWebpage('main.html');
+                    			}else{
+                    				alert(data.message);
+                    			}
+                            },
+                            error: function (e) {
+                    			console.log(e);
+                                alert("登录失败，请重新登录！");
+                            }
+                        });
+                    }
+
 		}
+		//访客登录
 		document.querySelector("#visit-button").onclick = function(){
-	                setUserId(0);	//访客
-					window.location.href="main.html";
+                    // setCookie("isLogin", true);		//已登录
+                    // setUserName("访客");	//用户名
+                    // setUserId(0);	//用户编号
+					goWebpage("main.html");
         		}
 </script>
 </body>

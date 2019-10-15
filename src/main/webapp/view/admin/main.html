@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+<!--管理系统首页,内容列表页-->
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <title>后台首页</title>
   <meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
   <meta name="author" content="Vincent Garreau" />
@@ -9,6 +10,7 @@
 
   <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script> <!--需要放前面，供后面的js-->
   <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
+  <script type="text/javascript" src="../../js/admin/commonAdmin.js"></script>           <!-- 管理系统公共逻辑 -->
 
   <!-- easyui样式-->
   <link rel="stylesheet" type="text/css" href="../../module/easyui/css/easyui.css">  <!-- 组件显示样式 -->
@@ -18,76 +20,6 @@
   <!-- easyui样式结束-->
 
 
-  <script type="text/javascript">
-
-      //获取用户权限
-      var permission = getPermission();
-      console.log("permission="+permission);
-
-      //获取默认显示的菜单项
-      itemId= getUrlParams("itemId");
-      console.log("itemId="+itemId);
-
-
-      //左侧菜单栏数据
-      var data;
-
-      switch(permission){
-          case '-1':
-              data = [{
-                  text: '内容管理',
-                  iconCls: 'icon-more',
-                  state: 'open',
-                  children: [{
-                      text: '内容列表'
-                  },{
-                      text: '新增内容'
-                  }]
-              },{
-                  text: '留言管理',
-                  iconCls: 'icon-more',
-                  state: 'open',
-                  children: [{
-                      text: '留言列表'
-                  }]
-              },{
-                  text: '系统管理',
-                  iconCls: 'icon-more',
-                  state: 'open',
-                  children: [{
-                      text: '访客记录'
-                  }]
-              }];
-      break;
-          default:
-              data = [{
-                  text: '内容管理',
-                  iconCls: 'icon-more',
-                  state: 'open',
-                  children:[{
-                      text: '内容列表'
-                  },{
-                      text: '新增内容'
-                  }]
-              }];
-              break;
-      }
-
-      $(function() {
-          //左侧菜单栏默认选中第一个，或者选中当前页面关联的选项
-          var menus = $('#left-sidemenu');
-          var opts = menus.sidemenu("options");
-          if(itemId==null||itemId==undefined||itemId==""){
-              console.log("itemId:"+itemId);
-              itemId = '_easyui_sidemenu_2';//从2开始
-          }
-          changeMenuSelect(menus, opts, itemId);
-
-          //首页加载数据
-          // $('#dg').datagrid({loadFilter:pagerFilter}).datagrid('loadData', getData());
-      });
-
-  </script>
 </head>
 
 <body id="mypannel" class="easyui-layout">
@@ -95,12 +27,12 @@
 <div id="head" data-options="region:'north',border:false" style="height:80px;background:#C8E6F5;padding:10px;position:relative;"><!-- 头部视图 -->
 
   <h3 align="center">内容列表</h3>
-  <label style="width:200px;height:20px;position:absolute;bottom:0;right: 120px"  >登录用户：<label id="deng_lu" style="width:100px;height:20px;position:absolute;bottom:0;right: 0px" >111</label></label>
+  <label style="width:200px;height:20px;position:absolute;bottom:0;right: 120px"  >登录用户：<label id="username" style="width:100px;height:20px;position:absolute;bottom:0;right: 0px" >未知</label></label>
   <button style="width:80px;height:20px;position:absolute;bottom:0;right: 0;background-color:#f6ab00;color:#ffffff;font-weight:bold"  onclick="logout()" >退出</button>
 </div>
 
 <div data-options="region:'west',split:true,title:'内容类型'" style="width:150px;padding:10px;"><!-- 左侧视图 -->
-  <div id="left-sidemenu" class="easyui-sidemenu" data-options="data:data,onSelect:selectItem"></div>
+  <div id="left-sidemenu"  ></div>
 </div>
 
 <div id="panel-center" data-options="region:'center',title:''"> <!-- 主体视图 -->
@@ -117,7 +49,7 @@
       <th data-options="field:'title',width:80,align:'center'">标题</th>
       <th data-options="field:'contentTypeName',width:80,align:'center'">类型</th>
       <th data-options="field:'overview',width:500,align:'left'">概述</th>
-      <th data-options="field:'submitDate',width:50,align:'center'">发布时间</th>
+      <th data-options="field:'submitDate',width:100,align:'center'">发布时间</th>
       <th data-options="field:'operation',width:100,align:'center',formatter:formatOper">操作</th>
     </tr>
     </thead>
@@ -125,42 +57,86 @@
 
   <div id="tb" style="padding:2px 5px;">
     &nbsp;&nbsp;&nbsp;&nbsp;
-    时间从: <input class="easyui-datebox" style="width:110px" data-options="formatter:myformatter,parser:myparser">
-    到: <input class="easyui-datebox" style="width:110px" data-options="formatter:myformatter,parser:myparser">
+    时间从: <input id="startDate" class="easyui-datebox" style="width:110px" data-options="formatter:myformatter,parser:myparser">
+    到: <input id="endDate" class="easyui-datebox" style="width:110px" data-options="formatter:myformatter,parser:myparser">
     <div id="type" style="display:inline-block">
       &nbsp;&nbsp;&nbsp;&nbsp;
       类型:
-      <select class="easyui-combobox" panelHeight="auto" style="width:100px">
-        <option value="0">全部类型</option>
-        <option value="1">技术博客</option>
-        <option value="2">技术字典</option>
-        <option value="3">生活记录</option>
-        <option value="4">程序员趣事</option>
-      </select>
+       <select id="selectType" class="easyui-combobox" panelHeight="auto" style="width:100px" onchange="changeContentTyepe(this.options[this.options.selectedIndex].value)">
+      	<option value="0">全部类型</option>
+      	</select>
     </div>
     &nbsp;&nbsp;&nbsp;&nbsp;
     分类:
-    <select class="easyui-combobox" panelHeight="auto" style="width:100px">
-      <option value="0">全部分类</option>
+    <select id="selectClass" class="easyui-combobox" panelHeight="auto" style="width:100px">
+    <option value="0">全部分类</option>
     </select>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="#" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+    关键字:
+    <input id="keyword" class="easyui-textbox" style="width:100px">
+     &nbsp;&nbsp;&nbsp;&nbsp;
+    <a class="easyui-linkbutton" iconCls="icon-search" href="javascript:void(0);" onclick="searchData()">搜索</a>
   </div>
 
 </div>
 
 
 <script>
+ // itemId= getUrlParams("itemId");
+    // console.log("itemId="+itemId);
 
-    $(function() {
-        getData(1,10);
-    });
+//获取用户名
+var username = getUsername();
+$("#username").text(username);
+
+    			//初始化左侧菜单栏
+                var leftMenuData = initLeftItemData();//初始化左侧菜单栏数据
+                  //为左侧菜单创建选项数据（包括显示内容和宽度）
+                $('#left-sidemenu').sidemenu({
+                       data: leftMenuData,
+                       onSelect:selectItem,
+                       width: 150
+                   });
+                setItemSelected("11");//设置第一项为默认选中
+    			getTypeAndClass();//获取下拉列表内容
+                 getData(1,10,null,null,null,null,null);//获取列表内容
 
 
-    function getData(currentPage,limitSize){
+//搜索按钮点击事件(名称无法使用search,与其他命名冲突)
+function searchData(){
+    var startDate= $("#startDate").datebox("getValue");
+    var endDate= $("#endDate").datebox("getValue");
+    console.log("startDate="+startDate+";endDate="+endDate);
+    var contentTypeId = $('#selectType').combobox('getValue');
+    var contentClassId = $("#selectClass").combobox('getValue');
+    console.log("contentTypeId="+contentTypeId+";contentClassId="+contentClassId);
+    var keyword = $("#keyword").textbox('getValue');
+    console.log("keyword="+keyword);
+
+     getData(1,10,startDate,endDate,contentTypeId,contentClassId,keyword);
+}
+
+function getData(currentPage,limitSize,startDate,endDate,contentTypeId,contentClassId,keyword){
+    var url = serverUrl+"/content/getContentList?currentPage="+currentPage+"&limitSize="+limitSize;
+    if(startDate != null && startDate != undefined && startDate != ''){
+        url+="&startDate="+startDate;
+    }
+    if(endDate != null && endDate != undefined && endDate != ''){
+        url+="&endDate="+endDate;
+    }
+    if(contentTypeId != null && contentTypeId != undefined && contentTypeId != ''){
+        url+="&contentTypeId="+contentTypeId;
+    }
+    if(contentClassId != null && contentClassId != undefined && contentClassId != ''){
+        url+="&contentClassId="+contentClassId;
+    }
+    if(keyword != null && keyword != undefined && keyword != ''){
+            url+="&keyword="+keyword;
+   }
+    console.log(url);
         $.ajax({
             type: "GET",
-            url:  serverUrl+"/content/getContentList?currentPage="+currentPage+"&limitSize="+limitSize,
+            url: url,
             contentType: "application/json",
             success: function (data) {
                 console.log("call /content/getContentList");
@@ -178,36 +154,91 @@
         });
     }
 
+function getTypeAndClass(){
+    //获取类别和分类选项列表
+        $.ajax({
+            type: "GET",
+            url:  serverUrl+"/content/getType",
+            contentType: "application/json",
+            success: function (data) {
+                console.log("call content/getType");
+                console.log(data);
+                if(data.status==200){	//调用成功
+                    console.log("调用成功!");
+                    console.log("接口数据长度:"+data.data.length);
 
-    function pagerFilter(data){
-        if (typeof data.length == 'number' && typeof data.splice == 'function'){	// is array
-            data = {
-                total: data.length,
-                rows: data
-            }
-        }
-        var dg = $(this);
-        var opts = dg.datagrid('options');
-        var pager = dg.datagrid('getPager');
-        pager.pagination({
-            onSelectPage:function(pageNum, pageSize){
-                opts.pageNumber = pageNum;
-                opts.pageSize = pageSize;
-                pager.pagination('refresh',{
-                    pageNumber:pageNum,
-                    pageSize:pageSize
-                });
-                dg.datagrid('loadData',data);
+                    var typeALLString  =
+                         {
+                             "contentTypeId" : 0,
+                             "contentTypeName" : '全部类别'
+                         }
+                    data.data.unshift(typeALLString);   //在数组的开头插入数据
+                    // console.log("修改后的数组为:");
+                    // console.log(data.data);
+                     /*为easyui-combobox动态添加数据*/
+                            $('#selectType').combobox({
+                                valueField : 'contentTypeId',
+                                textField : 'contentTypeName',
+                                data : data.data, /*这边的result格式要为标准的json格式,且有id和name两个键*/
+                                //数据改变时
+                                onChange:function(newValue,oldValue){
+                                        if(newValue != ""){
+                                        changeContentTyepe(newValue);   //更改二级下拉框内容
+                                        }
+                                        }
+                                });
+
+                }else{
+                    console.log(data.message);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                console.log("接口调用失败,请重试!");
             }
         });
-        if (!data.originalRows){
-            data.originalRows = (data.rows);
-        }
-        var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
-        var end = start + parseInt(opts.pageSize);
-        data.rows = (data.originalRows.slice(start, end));
-        return data;
-    }
+}
+      	//类别选择改变,重新获取分类列表
+      	function changeContentTyepe(itemId){
+      	    // alert(itemId);
+            $.ajax({
+                type: "GET",
+                url:  serverUrl+"/content/getClass?contentTypeId="+itemId,
+                contentType: "application/json",
+                success: function (data) {
+                    console.log("call content/getClass");
+                    console.log(data);
+                    if(data.status==200){	//调用成功
+                        console.log("调用成功!");
+                        console.log("接口数据长度:"+data.data.length);
+                        var classALLString  =
+                             {
+                             "contentClassId" : 0,
+                             "contentClassName" : '全部分类'
+                            }
+                         data.data.unshift(classALLString);   //在数组的开头插入数据
+                          /*为easyui-combobox动态添加数据*/
+                                                    $('#selectClass').combobox({
+                                                        valueField : 'contentClassId',
+                                                        textField : 'contentClassName',
+                                                        data : data.data /*这边的result格式要为标准的json格式,且有id和name两个键*/
+                                                        });
+
+                    }else{
+                        console.log(data.message);
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                    console.log("接口调用失败,请重试!");
+                }
+            });
+
+    	}
+
+
+
+
 
 
     function addContent() {
@@ -239,7 +270,9 @@
 
     }
 </script>
-<script type="text/javascript">
+<script type="text/javascript"> //easyUI组件相关
+
+//自定义表格项内容
     function formatOper(val,row,index){
         console.log(row.contentId); //内容编号
         console.log(index);         //显示位置，从0开始
@@ -265,7 +298,36 @@
     //     return showContent;
     // }
 
-
+  //底部分页控件
+function pagerFilter(data){
+    if (typeof data.length == 'number' && typeof data.splice == 'function'){	// is array
+        data = {
+            total: data.length,
+            rows: data
+        }
+    }
+    var dg = $(this);
+    var opts = dg.datagrid('options');
+    var pager = dg.datagrid('getPager');
+    pager.pagination({
+        onSelectPage:function(pageNum, pageSize){
+            opts.pageNumber = pageNum;
+            opts.pageSize = pageSize;
+            pager.pagination('refresh',{
+                pageNumber:pageNum,
+                pageSize:pageSize
+            });
+            dg.datagrid('loadData',data);
+        }
+    });
+    if (!data.originalRows){
+        data.originalRows = (data.rows);
+    }
+    var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
+    var end = start + parseInt(opts.pageSize);
+    data.rows = (data.originalRows.slice(start, end));
+    return data;
+}
 
 </script>
 </body>

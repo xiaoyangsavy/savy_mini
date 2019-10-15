@@ -19,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,26 +78,49 @@ public class ContentController {
     }
 
     /**
-     * 获取所有内容分类
-     * @return  所有内容分类
+     * 获取所有内容
+     * @return  所有内容
      */
     @RequestMapping(value = "/getContentList",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Result<Map<String,Object>> getContentList(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize, @RequestParam(value="contentTypeId", required=false) Integer contentTypeId, @RequestParam(value="contentClassId", required=false) Integer contentClassId, @RequestParam(value="keyword", required=false) String keyword){
+    public Result<Map<String,Object>> getContentList(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize, @RequestParam(value="startDate", required=false) String startDate, @RequestParam(value="endDate", required=false) String endDate, @RequestParam(value="contentTypeId", required=false) String contentTypeId, @RequestParam(value="contentClassId", required=false) String contentClassId, @RequestParam(value="keyword", required=false) String keyword){
         Map<String,Object> resultMap = new HashMap<String,Object>();
         List<Content> resultList = null;
         int count = 0;
+        //验证传入的数据
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startDateNew = null;
+        Date endDateNew = null;
+        try {
+            if(startDate!=null&&!"".equals(startDate)) {
+                System.out.print("startDate:"+startDate);
+                startDateNew = formatter.parse(startDate);
+            }
+            if(endDate!=null&&!"".equals(endDate)) {
+                endDateNew = formatter.parse(endDate);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Integer contentTypeIdNew = null;
+        if(contentTypeId!=null&&!"".equals(contentTypeId)) {
+            contentTypeIdNew = Integer.parseInt(contentTypeId);
+        }
+        Integer contentClassIdNew = null;
+        if(contentClassId!=null&&!"".equals(contentClassId)) {
+            contentClassIdNew = Integer.parseInt(contentClassId);
+        }
         try{
-        count = contentService.selectContentAmount(contentTypeId,contentClassId,keyword);
-        resultList = contentService.selectAllContent(currentPage,limitSize,contentTypeId,contentClassId,keyword);
+//        count = contentService.selectContentAmount(contentTypeId,contentClassId,keyword);
+        resultList = contentService.selectAllContent(currentPage,limitSize,startDateNew,endDateNew,contentTypeIdNew,contentClassIdNew,keyword);
 
     }catch (Exception e){
         e.printStackTrace();
     }
         System.out.println("resultList size="+resultList.size());
-        System.out.println("count="+count);
+//        System.out.println("count="+count);
         resultMap.put("data",resultList);
-        resultMap.put("count",count);
+//        resultMap.put("count",count);
         return Result.newSuccessResult(resultMap);
     }
 
@@ -117,10 +143,24 @@ public class ContentController {
     @RequestMapping(value = "/getClass",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public Result<List<ContentClass>> getContentClass(int contentTypeId) {
-        List<ContentClass> resultList = contentService.selectAllContentClass(contentTypeId);
+        System.out.println("/getClass paramter is :");
+        System.out.println("contentTypeId="+contentTypeId);
+        List<ContentClass> resultList = contentService.selectAllContentClassByTypeId(contentTypeId);
+        System.out.println("result size="+resultList.size());
         return Result.newSuccessResult(resultList);
     }
 
+
+    /**
+     * 获取所有内容类别和分类
+     * @return  所有内容类别和分类
+     */
+    @RequestMapping(value = "/getTypeAndClass",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<List<Map<String,Object>>> getContentTypeAndClass() {
+        List<Map<String,Object>> resultList = contentService.selectAllContentClass();
+        return Result.newSuccessResult(resultList);
+    }
 
     /**
      * 获取内容详情

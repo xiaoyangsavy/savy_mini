@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>历史事件</title>
 
 <script src="../js/jquery-3.3.1.min.js"></script>
@@ -9,7 +9,7 @@
  <link rel="stylesheet"  href="../css/common.css" type="text/css" media="all" />
  <link rel="stylesheet"  href="../css/head.css" type="text/css" media="all" />
  <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
-
+<script type="text/javascript" src="../js/common.js"></script>           <!-- 公共逻辑 -->
 <style>
 
 * {
@@ -313,7 +313,7 @@ img {
 
   </div>
 </section>
-
+</div>
 <script>
 function customWayPoint(className, addClassName, customOffset) {
   var waypoints = $(className).waypoint({
@@ -334,7 +334,9 @@ for (i = 0; i < 17; i++) {
   customWayPoint('.timeline__item--' + i, 'timeline__item-bg', defaultOffset);
 }
 </script>
-
+<script type="text/javascript">
+getHeadMenuItem();//获取顶部菜单数据
+</script>
 
 </body>
 </html>

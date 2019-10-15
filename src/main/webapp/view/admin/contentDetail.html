@@ -1,10 +1,19 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
   <script type="text/javascript" src="../../js/common.js"></script>           <!-- 公共逻辑 -->
     <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
+ <script type="text/javascript" src="../../js/admin/commonAdmin.js"></script>           <!-- 管理系统公共逻辑 -->
+
+    <!-- easyui样式-->
+    <link rel="stylesheet" type="text/css" href="../../module/easyui/css/easyui.css">  <!-- 组件显示样式 -->
+    <link rel="stylesheet" type="text/css" href="../../module/easyui/css/icon.css">     <!-- 组件显式图标 -->
+    <script type="text/javascript" src="../../module/easyui/js/jquery.easyui.min.js"></script>    <!--组件交互逻辑 -->
+    <script type="text/javascript" src="../../module/easyui/js/esayui-extend.js"></script>   <!-- 组件扩展功能 -->
+    <!-- easyui样式结束-->
+
 <head>
 <style type="text/css">
 
@@ -32,7 +41,11 @@
     //获取url传入参数
       contentId= getUrlParams("contentId");
       console.log("contentId="+contentId);
+      //左侧栏
+       contentId= getUrlParams("contentId");
+            console.log("contentId="+contentId);
 //获取内容
+function getContentDetail(){
     $.ajax({
         type: "GET",
         url:  serverUrl+"/content/getContentDetail?contentId="+contentId,
@@ -46,10 +59,11 @@
                 var title = data.data.title;
                 var submitDate = data.data.submitDate;
                 var content = data.data.content;
+                var contentClassId = data.data.contentClassId;//分类编号
                 document.getElementById("content_views").innerHTML = content;
                 $("#title").text(title);
                  $("#submitDate").text(submitDate);
-
+                setItemSelected(contentClassId);//设置对应的编号为默认选中
             }else{
                 console.log(data.message);
             }
@@ -59,22 +73,134 @@
             console.log("接口调用失败，请重试！");
         }
     });
+}
+
+
+    //获取类别和分类选项列表
+    $.ajax({
+        type: "GET",
+        url:  serverUrl+"/content/getTypeAndClass",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("call content/getTypeAndClass");
+            console.log(data);
+            if(data.status==200){	//调用成功
+                console.log("调用成功!");
+                console.log("接口数据长度:"+data.data.length);
+                var myData = data.data;             //左侧菜单的接口数据
+                var leftMenuArray = new Array();    //左侧菜单的填充内容
+                for(var i=0;i<myData.length;i++){
+                var leftMenuItemData = new Object();
+                leftMenuItemData['text']=myData[i].contentTypeName;
+                leftMenuItemData['iconCls']= 'icon-more';
+                leftMenuItemData['state']='open';
+                //生成二级菜单数据
+                var itemArray = myData[i].data; //每个二级菜单的接口数据
+                var leftSubmenuArray = new Array();//二级菜单的填充格式数据
+                for(var j=0;j<itemArray.length;j++){
+                var itemData = itemArray[j];
+                var leftSubmenuItemData = new Object();
+                leftSubmenuItemData['id']=itemData.contentClassId;
+                leftSubmenuItemData['text'] = itemData.contentClassName;
+                leftSubmenuArray.push(leftSubmenuItemData);
+                }
+                leftMenuItemData['children']=leftSubmenuArray;
+                leftMenuArray.push(leftMenuItemData)
+                }
+                console.log("左侧菜单数据为：");
+                console.log(leftMenuArray);
+                //为左侧菜单创建选项数据（包括显示内容和宽度）
+               $('#left-sidemenu').sidemenu({
+                                   data: leftMenuArray,
+                                   onSelect:selectItem,
+                                   width: 150
+                               });
+getContentDetail();//获取内容信息数据
+
+            }else{
+                console.log(data.message);
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("接口调用失败,请重试!");
+        }
+    });
 </script>
 </head>
 
- <body>
-<div class="article-header">
-            <div >
-               <h1 id="title" class="title-article">加载中...</h1>
-            </div>
-                <div class="article-bar-top">
-                    <span id="submitDate">加载中...</span>
-                </div>
+<body id="mypannel" class="easyui-layout">
+
+<div id="head" data-options="region:'north',border:false" style="height:80px;background:#C8E6F5;padding:10px;position:relative;"><!-- 头部视图 -->
+
+    <h3 align="center">内容列表</h3>
+    <label style="width:200px;height:20px;position:absolute;bottom:0;right: 120px"  >登录用户：<label id="deng_lu" style="width:100px;height:20px;position:absolute;bottom:0;right: 0px" >111</label></label>
+    <button style="width:80px;height:20px;position:absolute;bottom:0;right: 0;background-color:#f6ab00;color:#ffffff;font-weight:bold"  onclick="logout()" >退出</button>
+</div>
+
+<div data-options="region:'west',split:true,title:'内容类型'" style="width:200px;padding:10px;"><!-- 左侧视图 -->
+    <div id="left-sidemenu"></div>
+</div>
+
+<div id="panel-center" data-options="region:'center',title:''"> <!-- 主体视图 -->
+
+
+    <div class="article-header">
+        <div >
+            <h1 id="title" class="title-article">加载中...</h1>
         </div>
+        <div class="article-bar-top">
+            <span id="submitDate">加载中...</span>
+        </div>
+    </div>
 
- <div class="htmledit_views" id="content_views">
-加载中...
+    <div class="htmledit_views" id="content_views">
+        加载中...
 
- </div>
+    </div>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"> //easyUI组件相关
+
+//初始化左侧菜单栏
+// var data;
+//
+//             data = [{
+//                 text: 'test1',
+//                 iconCls: 'icon-more',
+//                 state: 'open',
+//                 children: [{
+//                     text: 'test11'
+//                 },{
+//                     text: 'test12'
+//                 }]
+//             },{
+//                 text: 'test2',
+//                 iconCls: 'icon-more',
+//                 state: 'open',
+//                 children: [{
+//                     text: 'test22'
+//                 }]
+//             }];
+
+
+
+
+//左侧菜单页面跳转方法
+function selectItem(item) {
+    console.log("selectItem:");
+    console.log(item);
+    console.log("permission="+permission);
+//alert('点击了'+item.text);
+    //页面跳转
+   goWebpage('./contentList.html?contentClassId='+item.id);
+}
+
+</script>
  </body>
  </html>

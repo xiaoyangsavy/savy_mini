@@ -10,8 +10,8 @@ import java.util.Date;
 public class Content {
 
     private int contentId;             //内容编号
-    private int contentTypeId;         //内容类型编号
-    private int contentClassId;         //内容分类编号
+    private Integer contentTypeId;         //内容类型编号
+    private Integer contentClassId;         //内容分类编号
     private String title;       //内容标题
     private String content;     //内容主体
     private String overview;    //内容概述
@@ -29,19 +29,19 @@ public class Content {
         this.contentId = contentId;
     }
 
-    public int getContentTypeId() {
+    public Integer getContentTypeId() {
         return contentTypeId;
     }
 
-    public void setContentTypeId(int contentTypeId) {
+    public void setContentTypeId(Integer contentTypeId) {
         this.contentTypeId = contentTypeId;
     }
 
-    public int getContentClassId() {
+    public Integer getContentClassId() {
         return contentClassId;
     }
 
-    public void setContentClassId(int contentClassId) {
+    public void setContentClassId(Integer contentClassId) {
         this.contentClassId = contentClassId;
     }
 

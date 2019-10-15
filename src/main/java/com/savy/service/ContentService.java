@@ -1,17 +1,15 @@
 package com.savy.service;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.savy.dao.ContentClassDao;
 import com.savy.dao.ContentDao;
 import com.savy.dao.ContentTypeDao;
 import com.savy.model.Content;
 import com.savy.model.ContentClass;
 import com.savy.model.ContentType;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 内容
@@ -71,13 +69,13 @@ public class ContentService {
     }
 
     //查询全部内容，根据条件
-    public List<Content> selectAllContent(int currentPage, int limitSize,  Integer contentTypeId, Integer contentClassId,  String keyword){
+    public List<Content> selectAllContent(int currentPage, int limitSize, Date startDate, Date endDate, Integer contentTypeId, Integer contentClassId, String keyword){
         List<Content> contentList = null;
-        try {
-        contentList = contentDao.selectAllContent(currentPage,limitSize,contentTypeId,contentClassId,keyword);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try {
+        contentList = contentDao.selectAllContent(currentPage,limitSize,startDate,endDate,contentTypeId,contentClassId,keyword);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         return contentList;
     }
 
@@ -103,14 +101,65 @@ public class ContentService {
         return contentTypeList;
     }
 
-    //查询全部内容分类，根据内容类别编号
-    public List<ContentClass> selectAllContentClass(int contentTypeId){
+    //查询内容分类，根据内容类别编号
+    public List<ContentClass> selectAllContentClassByTypeId(Integer contentTypeId){
         List<ContentClass> contentClassList = null;
                     try {
-        contentClassList = contentClassDao.selectAllContentClass(contentTypeId);
+        contentClassList = contentClassDao.selectAllContentClassByTypeId(contentTypeId);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
         return contentClassList;
+    }
+
+    //查询全部内容分类，并重构数据
+    public List<Map<String,Object>> selectAllContentClass(){
+        List<ContentClass> contentClassList = null;
+        try {
+            contentClassList = contentClassDao.selectAllContentClass();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+       List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
+
+        //将内容分类
+        Iterator<ContentClass> allClassIterable = contentClassList.iterator();
+        while(allClassIterable.hasNext()){
+            boolean isExitType = false; //判断类别是否已创建
+            ContentClass contentClass =  allClassIterable.next();
+            System.out.println("遍历分类："+contentClass.getContentClassId());
+            Map<String,Object> typeMap = null;
+            List<Map<String,Object>> classList = null;
+            //查看是否已存在此typeId
+            Iterator<Map<String,Object>> typeIterable = resultList.iterator();
+            while(typeIterable.hasNext()){
+                typeMap = typeIterable.next();
+                int typeId = Integer.parseInt(typeMap.get("contentTypeId").toString());
+                if(typeId==contentClass.getContentTypeId()){//找到对应的typeId
+                    isExitType = true;
+                    System.out.println("分配到已创建的type类别中："+typeId);
+                    break;
+                }
+            }
+            if(isExitType){//已存在此typeId
+                classList = (ArrayList<Map<String,Object>>)typeMap.get("data");
+            }else{//不存在
+                System.out.println("新建此type类别："+contentClass.getContentTypeId());
+               typeMap = new HashMap<String,Object>();
+                typeMap.put("contentTypeId",contentClass.getContentTypeId());
+                typeMap.put("contentTypeName",contentClass.getContentTypeName());
+                classList = new ArrayList<Map<String,Object>>();
+                typeMap.put("data",classList);
+                resultList.add(typeMap);
+            }
+            //将class数组整合进来
+            Map<String,Object> classMap = new HashMap<String,Object>();
+            classMap.put("contentClassId",contentClass.getContentClassId());
+            classMap.put("contentClassName",contentClass.getContentClassName());
+            classList.add(classMap);
+        }
+        System.out.println("数据总数为："+resultList.size());
+        return resultList;
     }
 }
