@@ -16,10 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 留言板
@@ -43,7 +40,14 @@ public class LeaveMessageController {
         Result result=new Result();
         boolean flag = false;
 
-        String nickname=myMap.get("nickname")!=null?myMap.get("nickname").toString():"";
+        String nickname=null;
+        if(myMap.get("nickname")==null||"".equals(myMap.get("nickname").toString())){
+            Random random = new Random();
+            int randomNumber = random.nextInt(1000);
+            nickname = "访客"+randomNumber;
+        }else{
+            nickname = myMap.get("nickname").toString();
+        }
         String email=myMap.get("email")!=null?myMap.get("email").toString():"";
         String leaveMessageContent=myMap.get("leaveMessageContent")!=null?myMap.get("leaveMessageContent").toString():"";
 
@@ -76,18 +80,38 @@ public class LeaveMessageController {
      */
     @RequestMapping(value = "/getLeaveMessageList",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Result<Map<String,Object>> getLeaveMessageList(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize){
+    public Result<Map<String,Object>> getLeaveMessageList(@RequestParam(value="pageNumber", required=false) int pageNumber, @RequestParam(value="pageSize", required=false) int pageSize){
         Map<String,Object> resultMap = new HashMap<String,Object>();
         List<LeaveMessage> resultList = null;
         int count = 0;
         //验证传入的数据
         try{
-            resultList = leaveMessageService.selectAllLeaveMessage(currentPage,limitSize);
+            resultList = leaveMessageService.selectAllLeaveMessage(pageNumber,pageSize);
         }catch (Exception e){
             e.printStackTrace();
         }
         System.out.println("resultList size="+resultList.size());
         resultMap.put("data",resultList);
         return Result.newSuccessResult(resultMap);
+    }
+
+
+    /**
+     * 获取留言总数
+     * @return  所有内容
+     */
+    @RequestMapping(value = "/getLeaveMessageCount",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<Integer> getLeaveMessageCount(){
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        int count = 0;
+        //验证传入的数据
+        try{
+            count = leaveMessageService.selectLeaveMessageCount();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("count="+count);
+        return Result.newSuccessResult(count);
     }
 }

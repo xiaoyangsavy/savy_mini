@@ -56,42 +56,40 @@ function lostAddFocus(id) {
 
 
 		<div id="respond" >
-		<form action="https://cuiqingcai.com/wp-comments-post.php" method="post" id="commentform">
 
 		<div class="board-comment">
 			<div class="comt-box">
 				<textarea  class="board-comment-textarea" placeholder="写点什么..."  name="board-comment-textarea" id="board-comment-textarea" cols="100%" rows="3" tabindex="1"
 						   onfocus="getAddFocus('board-comment-textarea')" onblur="lostAddFocus('board-comment-textarea');"></textarea>
 				<div class="board-comment-submit-div">
-					<button class="board-comment-submit-button" type="submit" name="board-comment-submit-button" id="board-comment-submit-button" tabindex="5"><i class="fa fa-check-square-o"></i> 提交评论</button>
+					<button class="board-comment-submit-button"  name="board-comment-submit-button" id="board-comment-submit-button" onclick="submit()" tabindex="5"><i class="fa fa-check-square-o"></i> 提交评论</button>
 					<div class="emoji-div"> <a class="emoji-button" href="javascript:void(0);"></a></div>
 				</div>
 			</div>
 					<div id="emoji-list-div" class="emoji-list-div" style="display: none"> </div><!--表情包-->
 					<div class="board-comment-userinfo-div" id="comment-author-info" style="display: none"><!--评论的个人信息填写-->
-						<h4>请填写个人信息：</h4>
+						<h4>（选填）请填写个人信息：</h4>
 						<ul>
-							<li class="form-inline"> <input class="ipt" type="text" name="author" id="name" value="" tabindex="2" placeholder="昵称"><span class="help-inline">昵称</span></li>
-							<li class="form-inline"> <input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="help-inline">邮箱 </span></li>
-							<li class="form-inline"> <input class="ipt" type="text" name="url" id="url" value="" tabindex="4" placeholder="网址"><span class="help-inline">网址</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="author" id="nickname" value="" tabindex="2" placeholder="昵称"><span class="help-inline">昵称</span></li>
+							<li class="form-inline"> <input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="help-inline">邮箱（仅对站长可见！）</span></li>
+							<!--<li class="form-inline"> <input class="ipt" type="text" name="url" id="webUrl" value="" tabindex="4" placeholder="网址"><span class="help-inline">网址</span></li>-->
 						</ul>
 					</div>
 									</div>
 
 
-	</form>
 	</div>
 
 	<!--  评论-->
 <div id="board-commentlist-div" class="board-commentlist-div">
 	<div id="board-commentlist-title-div" class="board-commentlist-div">
-		  <b> (0)</b>个小伙伴在吐槽
+		  共有<b id="leaveMessageCount"> (0)</b>条留言
 	</div>
 <ol class="board-commentlist-ol" id="board-commentlist-ol">
-		<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容1<div class="commentlist-title"><span class="commentlist-title-name">昵称1</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
-<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容2<div class="commentlist-title"><span class="commentlist-title-name">昵称2</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
-<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容3<div class="commentlist-title"><span class="commentlist-title-name">昵称3</span>2015-02-15 21:01  </div></div></div></li><!-- #comment-## -->
-
+	<!--	<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容1<div class="commentlist-title"><span class="commentlist-title-name">昵称1</span>2015-02-15 21:01  </div></div></div></li>
+<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容2<div class="commentlist-title"><span class="commentlist-title-name">昵称2</span>2015-02-15 21:01  </div></div></div></li>
+<li ><div ><img alt='' src="../images/user.png"  height='54' width='54' /><div class="commentlist-content">内容3<div class="commentlist-title"><span class="commentlist-title-name">昵称3</span>2015-02-15 21:01  </div></div></div></li>
+-->
 	</ol>
 
 <!-- 页面跳转 -->
@@ -115,37 +113,107 @@ function lostAddFocus(id) {
 
 <script>
 $(function() {
+var count = 0;
+
+    //获取留言总数
+    $.ajax({
+        type: "GET",
+        url: serverUrl + "/leaveMessage/getLeaveMessageCount",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("call /leaveMessage/getLeaveMessageCount");
+            console.log(data);
+            if(data.status==200){	//调用成功
+                count = data.data;//获取总数
+				$("#leaveMessageCount").text("("+count+")");
+
+				//显式评论列表内容开始--------------------------------------------------------------------------------------------------------------------------------------------
+                (function(name) {
+                    var container = $('#pagination-' + name);
+                    container.pagination({
+                        dataSource:serverUrl + "/leaveMessage/getLeaveMessageList",      //网址'https://api.flickr.com/services/feeds/photos_public.gne?tags=cat&tagmode=any&format=json&jsoncallback=?',
+                        locator: 'data.data',
+                        totalNumber: count,
+                        showGoInput: true,
+                        showGoButton: true,
+                        pageSize: 3,
+                        ajax: {
+                            beforeSend: function() {
+                                container.prev().html('Loading data from flickr.com ...');
+                            }
+                        },
+                        callback: function(response, pagination) {
+                            console.log(response);
+                            console.log(pagination);
+                            var dataHtml = '';
+
+                            $.each(response, function (index, item) {
+                                dataHtml += '<li ><div ><img alt=\'\' src="../images/user.png"  height=\'54\' width=\'54\' /><div class="commentlist-content">'+item.leaveMessageContent+'<div class="commentlist-title"><span class="commentlist-title-name">'+item.nickname+'</span>'+item.leaveMessageSubmitDate+'</div></div></div></li>';
+                            });
 
 
-  (function(name) {
-    var container = $('#pagination-' + name);
-    container.pagination({
-      dataSource:[1, 2, 3, 4, 5, 6, 7,40],      //网址'https://api.flickr.com/services/feeds/photos_public.gne?tags=cat&tagmode=any&format=json&jsoncallback=?',
-      locator: 'items',
-      totalNumber: 120,
-       showGoInput: true,
-      showGoButton: true,
-      pageSize: 3,
-      ajax: {
-        beforeSend: function() {
-          container.prev().html('Loading data from flickr.com ...');
+                            var showDataHtml = $('#board-commentlist-ol');
+                            showDataHtml.html(dataHtml);
+                        }
+                    })
+                })('demo1');
+				//显式评论列表内容结束-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+            }else{
+                console.log("获取数据失败，请重试！");
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("获取数据失败，请重试！");
         }
-      },
-      callback: function(response, pagination) {
-        window.console && console.log(22, response, pagination);
-        var dataHtml = '';
-
-        $.each(response, function (index, item) {
-          dataHtml += '<li ><div ><img alt=\'\' src="../images/user.png"  height=\'54\' width=\'54\' /><div class="commentlist-content">内容1<div class="commentlist-title"><span class="commentlist-title-name">昵称1</span>2015-02-15 21:01  </div></div></div></li>';
-        });
+    });
 
 
-        var showDataHtml = $('#board-commentlist-ol');
-          showDataHtml.html(dataHtml);
-      }
-    })
-  })('demo1');
-})
+
+});
+
+
+//提交评论
+function submit(){
+	var nickname = $("#nickname").val();
+    var email = $("#email").val();
+    var webUrl = $("#webUrl").val();
+    var leaveMessageContent = $("#board-comment-textarea").val();
+
+    var jsonObject = '{';
+    jsonObject += '"nickname":"' + nickname + '"';
+    jsonObject += ',"email":"' + email + '"';
+    jsonObject += ',"leaveMessageContent":"' + leaveMessageContent+ '"';
+    jsonObject += '}';
+    console.log(jsonObject);
+
+    $.ajax({
+        type: "POST",
+        url: serverUrl + "/leaveMessage/add",
+        contentType: "application/json",
+        data: jsonObject,
+        success: function (data) {
+            console.log("call leaveMessage/add");
+            console.log(data);
+            if (data.status == 200) {	//调用成功
+                console.log("调用成功！");
+                alert("留言成功！");
+                //window.location.href='typeList.html';
+                // goWebpage("main.html");
+				location.reload(true);//刷新当前页面
+            } else {
+                console.log(data.message);
+            }
+        },
+        error: function (e) {
+            console.log(e);
+            console.log("接口调用失败，请重试！");
+        }
+    });
+}
+
 </script>
 <script type="text/javascript">
 getHeadMenuItem();//获取顶部菜单数据

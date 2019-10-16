@@ -31,9 +31,18 @@ public class LeaveMessageService {
     }
 
     //查询全部内容，根据条件
-    public  List<LeaveMessage> selectAllLeaveMessage(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize){
+    public  List<LeaveMessage> selectAllLeaveMessage(Integer currentPage, Integer limitSize){
         List<LeaveMessage> contentList = null;
         contentList = leaveMessageDao.selectAllLeaveMessage(currentPage,limitSize);
         return contentList;
     }
+
+    //查询全部内容，根据条件
+    public int selectLeaveMessageCount(){
+        int count = 0;
+        count = leaveMessageDao.selectLeaveMessageCount();
+        return count;
+    }
+
+
 }
