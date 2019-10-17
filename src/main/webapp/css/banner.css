@@ -2,8 +2,9 @@
 	position: relative;
 	width: 800px;
 	height: 320px;
-	float: right;
+	float: left;
 	display: inline;
+	margin-left: 10px;
 }
 .banner-ul li {
 	position: absolute;
