@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -41,12 +42,12 @@ public class ContentController {
      * @param myMap
      * @return
      */
-    @RequestMapping(value = "/add",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)  //以json格式返回
+    @RequestMapping(value = "/editContent",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)  //以json格式返回
     @ResponseBody
-    public Result addContent(@RequestBody Map<String,Object> myMap) {//名称必须与在js中定义的name值一致
+    public Result editContent(@RequestBody Map<String,Object> myMap) {//名称必须与在js中定义的name值一致
         Result result=new Result();
         boolean flag = false;
-
+        Integer contentId=(Integer)myMap.get("contentId");
         int contentTypeId=(Integer)myMap.get("contentTypeId");
         int contentClassId=(Integer)myMap.get("contentClassId");
         String title=String.valueOf(myMap.get("title"));
@@ -65,7 +66,7 @@ public class ContentController {
         logger.info("/content/add 接口接收到的参数为：");
         logger.info("contentTypeId："+contentTypeId+"contentClassId："+contentClassId+"title:"+title+"content:"+content+"userId:"+userId);
 
-        flag = contentService.insertContent(contentTypeId,contentClassId,title,content,overview,userId); //调用插入方法
+        flag = contentService.editContent(contentId,contentTypeId,contentClassId,title,content,overview,userId); //调用插入方法
 
         if(flag){
             result.setResultStatus(ResultStatus.SUCCESS);
@@ -81,13 +82,15 @@ public class ContentController {
      * 获取所有内容
      * @return  所有内容
      */
-    @RequestMapping(value = "/getContentList",method = {RequestMethod.GET},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/getContentList",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Result<Map<String,Object>> getContentList(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize, @RequestParam(value="startDate", required=false) String startDate, @RequestParam(value="endDate", required=false) String endDate, @RequestParam(value="contentTypeId", required=false) String contentTypeId, @RequestParam(value="contentClassId", required=false) String contentClassId, @RequestParam(value="keyword", required=false) String keyword){
+    public Map<String,Object> getContentList(HttpServletRequest request, @RequestParam(value="startDate", required=false) String startDate, @RequestParam(value="endDate", required=false) String endDate, @RequestParam(value="contentTypeId", required=false) String contentTypeId, @RequestParam(value="contentClassId", required=false) String contentClassId, @RequestParam(value="keyword", required=false) String keyword){
         Map<String,Object> resultMap = new HashMap<String,Object>();
         List<Content> resultList = null;
         int count = 0;
         //验证传入的数据
+        int pageNumber = Integer.parseInt(request.getParameter("page")); //获取当前页码，easyui默认传到后台
+        int pageSize = Integer.parseInt(request.getParameter("rows")); //获取每页显示多少行，easyui默认传到后台
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date startDateNew = null;
         Date endDateNew = null;
@@ -110,18 +113,17 @@ public class ContentController {
         if(contentClassId!=null&&!"".equals(contentClassId)) {
             contentClassIdNew = Integer.parseInt(contentClassId);
         }
-        try{
-//        count = contentService.selectContentAmount(contentTypeId,contentClassId,keyword);
-        resultList = contentService.selectAllContent(currentPage,limitSize,startDateNew,endDateNew,contentTypeIdNew,contentClassIdNew,keyword);
-
-    }catch (Exception e){
-        e.printStackTrace();
-    }
+     try{
+        count = contentService.selectContentAmount(startDateNew,endDateNew,contentTypeIdNew,contentClassIdNew,keyword);
+        resultList = contentService.selectAllContent(pageNumber,pageSize,startDateNew,endDateNew,contentTypeIdNew,contentClassIdNew,keyword);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         System.out.println("resultList size="+resultList.size());
-//        System.out.println("count="+count);
-        resultMap.put("data",resultList);
-//        resultMap.put("count",count);
-        return Result.newSuccessResult(resultMap);
+        System.out.println("count="+count);
+        resultMap.put("rows",resultList);
+        resultMap.put("total",count);
+        return resultMap;
     }
 
 
@@ -172,5 +174,24 @@ public class ContentController {
         System.out.println("parameter is :"+contentId);
         Content result = contentService.selectContentById(contentId);
         return Result.newSuccessResult(result);
+    }
+
+    @RequestMapping(value = "/deleteContent",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Result<Boolean> deleteContent(@RequestBody Map<String,Object> myMap) {
+        System.out.println("call /message/deleteTypeName");
+        Integer contentId=Integer.valueOf(myMap.get("contentId").toString());
+        Result<Boolean> result=new Result<>();
+        boolean flag =contentService.deleteContent(contentId);
+        if(flag) {
+            result.setResultStatus(ResultStatus.SUCCESS);
+            result.setMessage("删除成功！");
+            result.setData(flag);
+        }else{
+            result.setResultStatus(ResultStatus.FAIL);
+            result.setMessage("删除失败！");
+            result.setData(flag);
+        }
+        return  result;
     }
 }

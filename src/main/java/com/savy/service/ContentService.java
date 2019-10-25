@@ -25,11 +25,15 @@ public class ContentService {
     ContentClassDao contentClassDao;
 
     //新增内容
-    public boolean insertContent(int contentTypeId, int contentClassId, String title, String content,  String overview, int userId){
+    public boolean editContent(Integer contentId,int contentTypeId, int contentClassId, String title, String content,  String overview, int userId){
         boolean flag = false;
         int result = 0;
         try {
-            result = contentDao.insertContent(contentTypeId, contentClassId, title, content, overview,userId);
+            if(contentId!=null&&contentId!=0){//修改
+                result = contentDao.updateContent(contentId,contentTypeId, contentClassId, title, content, overview);
+            }else {//新增
+                result = contentDao.insertContent(contentTypeId, contentClassId, title, content, overview, userId);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -39,14 +43,14 @@ public class ContentService {
         return flag;
     }
     //修改内容
-    public boolean updateContent(int contentId,int contentTypeId,int contentClassId,String title,String content,String overview){
-        boolean flag = false;
-        int result = contentDao.updateContent(contentId,contentTypeId,contentClassId,title,content,overview);
-        if(result>=1){  //result为受影响的行，0表示操作失败
-            flag = true;
-        }
-        return flag;
-    }
+//    public boolean updateContent(int contentId,int contentTypeId,int contentClassId,String title,String content,String overview){
+//        boolean flag = false;
+//        int result = contentDao.updateContent(contentId,contentTypeId,contentClassId,title,content,overview);
+//        if(result>=1){  //result为受影响的行，0表示操作失败
+//            flag = true;
+//        }
+//        return flag;
+//    }
     //删除内容
     public boolean deleteContent(int contentId){
         boolean flag = false;
@@ -80,10 +84,10 @@ public class ContentService {
     }
 
     //查询内容数目
-    public int selectContentAmount(Integer contentTypeId, Integer contentClassId,String keyword){
+    public int selectContentAmount(Date startDate, Date endDate, Integer contentTypeId, Integer contentClassId, String keyword){
         int contentAmount = 0;
         try {
-        contentAmount = contentDao.selectContentAmount(contentTypeId,contentClassId,keyword);
+        contentAmount = contentDao.selectContentAmount(startDate,endDate,contentTypeId,contentClassId,keyword);
             }catch (Exception e){
                 e.printStackTrace();
             }

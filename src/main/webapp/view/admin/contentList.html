@@ -166,23 +166,54 @@ function getTypeAndClass(){
 
 
     function editContent(object) {
-        window.location.href="contentEdit.html";
+        window.location.href='contentEdit.html?contentId='+object;
     }
 
     function detailContent(object) {
-        console.log(object);
+        // console.log(object);
         window.location.href='contentDetail.html?contentId='+object;
     }
 
     function deleteContent(object) {
         $.messager.confirm("", "确认删除吗？", function (r) {
-            if (r) {
-                $.messager.show({
-                    title:'提示',
-                    msg:'内容已删除',
-                    timeout:500,
-                    showType:'fade'
+            if (r) {//删除
+
+                $.ajax({
+                    type: "POST",
+                    url:  serverUrl+"/content/deleteContent",
+                    contentType: "application/json",
+                    data : JSON.stringify({
+                        "contentId": object
+                    }),
+                    success: function (data) {
+                        console.log("call content/deleteContent");
+                        console.log(data);
+                        if(data.status==200){	//调用成功
+                            console.log("调用成功!");
+                            $.messager.show({
+                                title:'提示',
+                                msg:'内容已删除',
+                                timeout:500,
+                                showType:'fade'
+                            });
+                            //刷新页面，重新获取数据
+                            getData(startDate,endDate,contentTypeId,keyword);
+                        }else{
+                            console.log(data.message);
+                            $.messager.show({
+                                title:'提示',
+                                msg:'内容失败，请重试！',
+                                timeout:500,
+                                showType:'fade'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        console.log("接口调用失败,请重试!");
+                    }
                 });
+
             }
         });
 

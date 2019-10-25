@@ -36,13 +36,7 @@
 </div>
 
 <div id="panel-center" data-options="region:'center',title:''"> <!-- 主体视图 -->
-  <table id="datagrid" class="easyui-datagrid" title="内容列表" style=""
-         fit="true"  pagination="true" fitColumns="true"    data-options="
-				singleSelect:true,
-				pagination:true,
-				pagePosition : 'bottom',
-				pageSize:10,
-                toolbar:'#tb'">
+  <table id="datagrid" class="easyui-datagrid" title="内容列表" style="">
     <thead>
     <tr>
       <!--<th data-options="field:'ck',checkbox:true"></th> -->
@@ -99,7 +93,42 @@ $("#username").text(username);
                    });
                 setItemSelected("11");//设置第一项为默认选中
     			getTypeAndClass();//获取下拉列表内容
-                 getData(1,10,null,null,null,null,null);//获取列表内容
+                // getData(1,10,null,null,null,null,null);//获取列表内容
+
+ //初始化表格
+ $(function () {
+     init_datagrid();
+ });
+ function init_datagrid() {
+     //默认第一页，
+     var pageNumber = 1;
+     //每页显示10行
+     var pageSize = 10;
+     //表头字段
+     // var arr_columns = dg_columns();
+     //datagrid名称
+     $("#datagrid").datagrid({
+         url: serverUrl+"/content/getContentList",
+         method: 'post',
+         singleSelect: true,//是否单选
+         remoteSort: true, //定义从服务器对数据进行排序。
+         pagination: true, //在DataGrid控件底部显示分页工具栏。
+         pagePosition : 'bottom',//分页组件显式位置
+         pageNumber: pageNumber,//页号
+         pageSize: pageSize,     //每页显示数目
+         pageList: [10,20,50],   //每页显示数目可选项
+         fit:true,
+         fitColumns:true,
+         rownumbers: true,       //行号
+         loadMsg: '正在加载数据',
+         checkbox: true,
+         emptyMsg: '列表为空',
+         selectOnCheck: false,
+         checkOnSelect: false,
+         toolbar:'#tb'         //工具栏
+     });
+ }
+
 
 
 //搜索按钮点击事件(名称无法使用search,与其他命名冲突)
@@ -113,11 +142,11 @@ function searchData(){
     var keyword = $("#keyword").textbox('getValue');
     console.log("keyword="+keyword);
 
-     getData(1,10,startDate,endDate,contentTypeId,contentClassId,keyword);
+     getData(startDate,endDate,contentTypeId,contentClassId,keyword);
 }
 
-function getData(currentPage,limitSize,startDate,endDate,contentTypeId,contentClassId,keyword){
-    var url = serverUrl+"/content/getContentList?currentPage="+currentPage+"&limitSize="+limitSize;
+function getData(startDate,endDate,contentTypeId,contentClassId,keyword){
+    var url = serverUrl+"/content/getContentList?1=1";
     if(startDate != null && startDate != undefined && startDate != ''){
         url+="&startDate="+startDate;
     }
@@ -134,24 +163,13 @@ function getData(currentPage,limitSize,startDate,endDate,contentTypeId,contentCl
             url+="&keyword="+keyword;
    }
     console.log(url);
-        $.ajax({
-            type: "GET",
-            url: url,
-            contentType: "application/json",
-            success: function (data) {
-                console.log("call /content/getContentList");
-                console.log(data);
-                if(data.status==200){	//调用成功
-                    $('#datagrid').datagrid({loadFilter:pagerFilter}).datagrid('loadData',data.data.data);
-                }else{
-                    console.log("获取数据失败，请重试！");
-                }
-            },
-            error: function (e) {
-                console.log(e);
-                console.log("获取数据失败，请重试！");
-            }
-        });
+    $("#datagrid").datagrid({
+        url: url,
+        method: 'post',
+        pageNumber: 1,
+        pageSize: 10,
+    });
+
     }
 
 function getTypeAndClass(){
@@ -248,7 +266,7 @@ function getTypeAndClass(){
 
 
     function editContent(object) {
-        window.location.href="contentEdit.html";
+        window.location.href='contentEdit.html?contentId='+object;
     }
 
     function detailContent(object) {

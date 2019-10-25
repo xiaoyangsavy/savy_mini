@@ -22,6 +22,6 @@ public interface ContentDao {
     //查询全部内容，根据条件
     List<Content> selectAllContent(@Param("currentPage") int currentPage, @Param("limitSize") int limitSize, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("contentTypeId") Integer contentTypeId, @Param("contentClassId") Integer contentClassId, @Param("keyword") String keyword);
     //查询内容数目
-    int selectContentAmount( @Param("contentTypeId") Integer contentTypeId, @Param("contentClassId") Integer contentClassId, @Param("keyword") String keyword);
+    int selectContentAmount(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("contentTypeId") Integer contentTypeId, @Param("contentClassId") Integer contentClassId, @Param("keyword") String keyword);
 
 }

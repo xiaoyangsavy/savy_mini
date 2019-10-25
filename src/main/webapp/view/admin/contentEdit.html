@@ -16,6 +16,13 @@
     <script type="text/javascript" src="../../module/simditor/scripts/simditor.js"></script>
 	<!-- 富文本编辑器simditor组件，结束-->
 
+
+	<script type="text/javascript">
+        //获取url传入参数
+        var  contentId= getUrlParams("contentId");
+        console.log("contentId="+contentId);
+
+	</script>
       </head>
  <body>
 			<div class="wrapper">
@@ -60,11 +67,12 @@
 			</div>
   </body>
   <script type="text/javascript">
+      var editor;
   	$(function(){
   		toolbar = [ 'title', 'bold', 'italic', 'underline', 'strikethrough',
 					'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|',
 					'link', 'image', 'hr', '|', 'indent', 'outdent' ];
-		var editor = new Simditor( {
+		editor = new Simditor( {
 			textarea : $('#editor'),
 			placeholder : '这里输入内容...',
 			toolbar : toolbar,  //工具栏
@@ -78,7 +86,6 @@
 			}
 		});
   	});
-
 
 
 //获取类别和分类选项列表
@@ -100,7 +107,9 @@
                     html += '<option value="'+item.contentTypeId+'">'+item.contentTypeName+'</option>';
                 }
                 document.getElementById("selectType").innerHTML = html;
-
+                if(contentId != null && contentId != undefined && contentId != '') {//修改模式
+                    getContentDetail();
+                }
             }else{
                 console.log(data.message);
             }
@@ -145,7 +154,66 @@
 
 	}
 
+      //获取内容
+      function getContentDetail(){
+          $.ajax({
+              type: "GET",
+              url:  serverUrl+"/content/getContentDetail?contentId="+contentId,
+              contentType: "application/json",
+              success: function (data) {
+                  console.log("call content/getContentDetail");
+                  console.log(data);
+                  if(data.status==200){	//调用成功
+                      console.log("调用成功！");
+                      console.log("接口数据："+data);
+                      var title = data.data.title;
+                      // var submitDate = data.data.submitDate;
+                      var content = data.data.content;
+                      var contentTypeId = data.data.contentTypeId;//分类编号
+                      var contentClassId = data.data.contentClassId;//类别编号
+                      editor.setValue(content);	//富文本编辑器内容填充
+                      $("#title").val(title);	//标题
+                      $("#selectType").val(contentTypeId);	//类别
 
+					  //获取分类数据
+                      $.ajax({
+                          type: "GET",
+                          url:  serverUrl+"/content/getClass?contentTypeId="+contentTypeId,
+                          contentType: "application/json",
+                          success: function (data) {
+                              console.log("call content/getClass");
+                              console.log(data);
+                              if(data.status==200){	//调用成功
+                                  console.log("调用成功！");
+                                  console.log("接口数据长度："+data.data.length);
+                                  var html = "";
+                                  html += '<option value="-1">请选择</option>';
+                                  for(var i = 0,len = data.data.length; i < len; i++){
+                                      console.log(data.data[i]);
+                                      var item = data.data[i];
+                                      html += '<option value="'+item.contentClassId+'">'+item.contentClassName+'</option>';
+                                  }
+                                  document.getElementById("selectClass").innerHTML = html;
+                                  $("#selectClass").val(contentClassId);//默认填充分类选中
+                              }else{
+                                  console.log(data.message);
+                              }
+                          },
+                          error: function (e) {
+                              console.log(e);
+                              console.log("接口调用失败，请重试！");
+                          }
+                      });
+                  }else{
+                      console.log(data.message);
+                  }
+              },
+              error: function (e) {
+                  console.log(e);
+                  console.log("接口调用失败，请重试！");
+              }
+          });
+      }
 
 
 	//提交内容
@@ -189,6 +257,9 @@
 
           if (flag) {
           var jsonObject = '{';
+          if(contentId != null && contentId != undefined && contentId != ''){//修改模式
+              jsonObject += '"contentId":' + contentId + ',';
+		  }
           jsonObject += '"title":"' + title + '"';
           jsonObject += ',"content":"' + content + '"';
           jsonObject += ',"overview":"' + overview + '"';
@@ -200,11 +271,11 @@
 
           $.ajax({
               type: "POST",
-              url: serverUrl + "/content/add",
+              url: serverUrl + "/content/editContent",
               contentType: "application/json",
               data: jsonObject,
               success: function (data) {
-                  console.log("call content/add");
+                  console.log("call content/editContent");
                   console.log(data);
                   if (data.status == 200) {	//调用成功
                       console.log("调用成功！");
