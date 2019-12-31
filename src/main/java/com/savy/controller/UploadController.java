@@ -1,7 +1,9 @@
 package com.savy.controller;
 
 import com.alibaba.druid.util.StringUtils;
+import com.savy.service.FileService;
 import com.savy.util.CommonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import com.savy.service.FileUploadUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,8 @@ import java.util.Map;
 @Controller
 public class UploadController{
 
+    @Autowired
+    FileService fileService;
     //上传
     @RequestMapping(value = "/upload",method = {RequestMethod.POST},produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
@@ -36,42 +39,11 @@ public class UploadController{
         if(fileData.isEmpty()){ //文件为空时返回失败
             isSuccessFlag = false;
         }
-        // List<MultipartFile> files=(Mul)(request)
-        String classPath = ClassUtils.getDefaultClassLoader().getResource("").getPath();
-          System.out.println("class所在目录为："+classPath);
-        String projectPath=StringUtils.subString(classPath,"","savy");//获取项目所在目录
-        System.out.println("项目路径为："+projectPath);
-        String filePathString=projectPath+File.separator+"SavyFile"+File.separator+"Image";//定义文件的真正保存目录
-        File myFileDirectory = new File(filePathString);
-        System.out.println(myFileDirectory.isDirectory()?filePathString+"是目录":filePathString+"是文件");
-        if(!myFileDirectory.exists()){//文件目录不存在时进行创建（当给定路径没有后缀时，系统无法判断是否为文件夹）
-            System.out.println("创建文件目录:"+myFileDirectory);
-            myFileDirectory.mkdirs();
-        }
-            String fileOriginalName = fileData.getOriginalFilename();   //初始文件名
-//             String fileOriginalName = "1.png";   //初始文件名
-            String fileSuffix = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));//文件后缀名称
-            String  finalFileName = CommonUtil.generateRandomFilename()+fileSuffix;//生成随机文件名
-            //String filePath = "E:/test_load/";
-            String  finalFilePath = filePathString.toString()+File.separator+ finalFileName;//最终要保存的文件名
-            System.out.println("最终保存的文件名为："+finalFilePath);
-            File  finalFile = new File( finalFilePath);
-        try {
-            fileData.transferTo(finalFile);// 将传入的文件保存到指定位置
-        } catch (IOException e) {
-            isSuccessFlag = false;
-            e.printStackTrace();
-        }
-
-        finalFilePath =  finalFilePath.substring(1);//windows环境中去除地址前面的
-        System.out.println("文件的绝对地址为："+finalFilePath);//图片的实际保存位置
-        //将图片的绝对地址更改为相对地址,用于图片在浏览器中显示
-        finalFilePath = finalFilePath.replace("D:/WorkSpace/\\SavyFile\\Image","/photo");
-        System.out.println("返回给前端的地址为："+finalFilePath);
+        String fileUrl = fileService.uploadFile(fileData, "Image");
 
         if(isSuccessFlag) {
             resultMap.put("success", true);  //保存成功
-            resultMap.put("file_path",finalFilePath);
+            resultMap.put("file_path",fileUrl);
         }else{
             resultMap.put("success", false);  //保存失败
         }
